@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.HomeView">
+
+    <Grid RowDefinitions="*,Auto,*">
+
+        <!-- Sfondo dedicato alla Home (indipendente dallo sfondo generale): nullo finche' non
+             importato da Personalizza interfaccia, in tal caso la Window/il Grid sottostante
+             restano semplicemente trasparenti e si vede il colore/gradiente di base. -->
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="{DynamicResource HomeBackgroundImageBrush}" IsHitTestVisible="False"/>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <!-- Emblema rotante: reticolo/rune originale, nessun logo protetto.
+                 Posizione/dimensione/asse/velocita' personalizzabili da "Personalizza interfaccia"
+                 (vedi HomeView.axaml.cs). -->
+            <Grid x:Name="EmblemContainer" Width="320" Height="320" Margin="0,0,0,10" HorizontalAlignment="Center">
+                <Viewbox x:Name="VectorEmblemViewbox" Stretch="Uniform">
+                    <!-- Avalonia non registra nella NameScope gli oggetti annidati nel grafo di una
+                         proprieta' (es. RenderTransform): i transform vengono quindi creati e
+                         referenziati dal code-behind (vedi HomeView.axaml.cs), non con x:Name qui. -->
+                    <Canvas x:Name="EmblemCanvas" Width="400" Height="400" RenderTransformOrigin="0.5,0.5">
+
+                        <Ellipse Canvas.Left="30" Canvas.Top="30" Width="340" Height="340" Stroke="{StaticResource AccentBrightBrush}"
+                                 StrokeThickness="1.4" StrokeDashArray="1,4" Opacity="0.55"/>
+                        <Ellipse Canvas.Left="60" Canvas.Top="60" Width="280" Height="280" Stroke="{StaticResource EnergyBrush}"
+                                 StrokeThickness="1" Opacity="0.4"/>
+                        <Rectangle Canvas.Left="100" Canvas.Top="100" Width="200" Height="200" Stroke="{StaticResource SteelBrush}"
+                                   StrokeThickness="1.2" Opacity="0.5" RenderTransformOrigin="0.5,0.5">
+                            <Rectangle.RenderTransform><RotateTransform Angle="45"/></Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <Line StartPoint="370,200" EndPoint="385,200" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="320.2,320.2" EndPoint="330.8,330.8" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="200,370" EndPoint="200,385" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="79.8,320.2" EndPoint="69.2,330.8" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="30,200" EndPoint="15,200" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="79.8,79.8" EndPoint="69.2,69.2" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="200,30" EndPoint="200,15" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                        <Line StartPoint="320.2,79.8" EndPoint="330.8,69.2" Stroke="{StaticResource AccentBrightBrush}" StrokeThickness="2"/>
+                    </Canvas>
+                </Viewbox>
+
+                <!-- Logo personalizzato (VStudio Apps di default): sostituisce l'emblema vettoriale
+                     quando Theme.LogoImagePath e' impostato (vedi HomeView.axaml.cs). -->
+                <Image x:Name="CustomLogoImage" Stretch="Uniform" IsVisible="False" RenderTransformOrigin="0.5,0.5"/>
+            </Grid>
+
+            <TextBlock Text="QUAKE III" Classes="title" FontSize="56" HorizontalAlignment="Center"/>
+            <TextBlock Text="{DynamicResource Str.Home.Subtitle}" FontWeight="Bold" FontSize="16"
+                       Foreground="{StaticResource AccentBrightBrush}" HorizontalAlignment="Center" Margin="0,4,0,36"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                <Button Content="{DynamicResource Str.Home.LocalButton}" Classes="hero" Width="300" Height="110" Command="{Binding GoLocalSetupCommand}"/>
+                <Button Content="{DynamicResource Str.Home.MultiplayerButton}" Classes="hero" Width="300" Height="110" Command="{Binding GoMultiplayerSetupCommand}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0" Spacing="10">
+                <Button Content="{DynamicResource Str.Home.HelpButton}" Command="{Binding GoHelpCommand}"/>
+                <Button Content="{DynamicResource Str.Home.SettingsButton}" Command="{Binding GoSettingsCommand}"/>
+                <Button Content="{DynamicResource Str.Home.DiagnosticsButton}" Command="{Binding GoDiagnosticsCommand}"/>
+                <Button Content="{DynamicResource Str.Home.CustomizeButton}" Command="{Binding GoCustomizeCommand}"/>
+            </StackPanel>
+
+            <Border Classes="card" Margin="0,32,0,0" Padding="20,12" MaxWidth="560" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Panel Width="12" Height="12" VerticalAlignment="Center">
+                        <Ellipse Fill="{StaticResource DangerBrush}"/>
+                        <Ellipse Fill="{StaticResource SuccessBrush}" IsVisible="{Binding Home.InstallationOk}"/>
+                    </Panel>
+                    <TextBlock Text="{Binding Home.InstallationSummary}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

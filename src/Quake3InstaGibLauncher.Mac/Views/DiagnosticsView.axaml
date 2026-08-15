@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="using:Quake3InstaGibLauncher.Core.Models"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.DiagnosticsView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="900">
+            <TextBlock Text="DIAGNOSTICA" Classes="title" FontSize="28" Margin="0,0,0,20"/>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="CONTROLLI INSTALLAZIONE" Classes="section" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding Checks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="models:DiagnosticCheck">
+                                <Grid ColumnDefinitions="20,220,*" Margin="0,4">
+                                    <Panel Width="10" Height="10" VerticalAlignment="Center">
+                                        <Ellipse Fill="{StaticResource DangerBrush}"/>
+                                        <Ellipse Fill="{StaticResource SuccessBrush}" IsVisible="{Binding Success}"/>
+                                    </Panel>
+                                    <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Detail}" Classes="muted" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="AVVISI DI SCANSIONE .PK3" Classes="section" Foreground="{StaticResource WarningBrush}" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding ScanErrors}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Classes="muted" TextWrapping="Wrap" Margin="0,2"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="ULTIMO COMANDO GENERATO" Classes="section" Margin="0,0,0,10"/>
+                    <TextBox Text="{Binding LastGeneratedCommand, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
+                             FontFamily="Consolas,Menlo,monospace" FontSize="11" Margin="0,0,0,10"/>
+                    <TextBlock Text="ULTIMO FILE DI ROTAZIONE (.cfg)" Classes="section" Margin="0,0,0,10"/>
+                    <TextBox Text="{Binding LastCfgPath, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
+                             FontFamily="Consolas,Menlo,monospace" FontSize="11"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel>
+                    <TextBlock Text="CARTELLA DATI APP" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding AppDataFolder}" Classes="muted" FontFamily="Consolas,Menlo,monospace" TextWrapping="Wrap"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,8,0,0"
+                               Text="Nessuna CD key, password o dato sensibile viene mai salvato qui: solo impostazioni, cache anteprime e log di errore tecnico."/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.PlayerProfileView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="820">
+            <TextBlock Text="{DynamicResource Str.PlayerProfile.Title}" Classes="title" FontSize="26" Margin="0,0,0,6"/>
+            <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,20" Text="{DynamicResource Str.PlayerProfile.Intro}"/>
+
+            <!-- ===================== Nome colorato ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.PlayerProfile.NameHeader}" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10" Text="{DynamicResource Str.PlayerProfile.NameInfo}"/>
+                    <TextBox x:Name="NameTextBox" Text="{Binding ColoredName, UpdateSourceTrigger=PropertyChanged}"
+                             FontFamily="Consolas,Menlo,monospace" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="{DynamicResource Str.PlayerProfile.PaletteHeader}" Classes="muted" Margin="0,0,0,6"/>
+                    <StackPanel x:Name="PalettePanel" Orientation="Horizontal" Spacing="6" Margin="0,0,0,14"/>
+
+                    <TextBlock Text="{DynamicResource Str.Common.PreviewLabel}" Classes="muted" Margin="0,0,0,4"/>
+                    <Border Background="{StaticResource Bg0Brush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" CornerRadius="3" Padding="12,10" Margin="0,0,0,10">
+                        <TextBlock x:Name="PreviewText" FontSize="18" FontWeight="Bold"/>
+                    </Border>
+
+                    <Button Content="{DynamicResource Str.PlayerProfile.ResetName}" HorizontalAlignment="Left" Command="{Binding ResetNameCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Mirino ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.PlayerProfile.CrosshairHeader}" Classes="section" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*" Margin="0,0,0,10">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.PlayerProfile.CrosshairStyle}" Classes="muted"/>
+                            <ComboBox ItemsSource="{Binding AvailableCrosshairStyles}" SelectedItem="{Binding CrosshairStyle}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="{DynamicResource Str.PlayerProfile.CrosshairColor}" Classes="muted"/>
+                            <TextBox Text="{Binding CrosshairColorHex, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Classes="muted" Margin="0,0,0,2">
+                        <Run Text="{DynamicResource Str.PlayerProfile.CrosshairSizeLabel}"/>
+                        <Run Text=" "/>
+                        <Run Text="{Binding CrosshairSize}"/>
+                    </TextBlock>
+                    <Slider Minimum="4" Maximum="96" Value="{Binding CrosshairSize}" TickFrequency="4" Margin="0,0,0,10"/>
+
+                    <CheckBox Content="{DynamicResource Str.PlayerProfile.CrosshairHealthColor}" IsChecked="{Binding CrosshairHealthColor}" Margin="0,0,0,6"/>
+                    <CheckBox Content="{DynamicResource Str.PlayerProfile.CrosshairPulse}" IsChecked="{Binding CrosshairPulseOnHit}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Colori modello ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.PlayerProfile.ModelColorsHeader}" Classes="section" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.PlayerProfile.PrimaryColor}" Classes="muted"/>
+                            <ComboBox ItemsSource="{Binding AvailableModelColors}" SelectedValueBinding="{Binding Value}"
+                                      SelectedValue="{Binding ModelColor1}" HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="{DynamicResource Str.PlayerProfile.SecondaryColor}" Classes="muted"/>
+                            <ComboBox ItemsSource="{Binding AvailableModelColors}" SelectedValueBinding="{Binding Value}"
+                                      SelectedValue="{Binding ModelColor2}" HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding StatusMessage}" Classes="muted" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

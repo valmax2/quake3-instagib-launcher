@@ -1,0 +1,313 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Quake3InstaGibLauncher.Mac.ViewModels"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.CustomizeView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="820">
+            <TextBlock Text="PERSONALIZZA INTERFACCIA" Classes="title" FontSize="26" Margin="0,0,0,6"/>
+            <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,20"
+                       Text="Le modifiche si vedono subito. Premi &quot;Applica e salva&quot; per renderle permanenti tra un avvio e l'altro."/>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="PALETTE RAPIDE" Classes="section" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding Presets}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:ColorPreset">
+                                <Button Margin="0,0,10,10" Padding="10,8"
+                                        Command="{Binding $parent[UserControl].DataContext.ApplyPresetCommand}" CommandParameter="{Binding}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Width="16" Height="16" CornerRadius="8" VerticalAlignment="Center">
+                                            <Border.Background><SolidColorBrush Color="{Binding Accent}"/></Border.Background>
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="COLORI (formato #RRGGBB)" Classes="section" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                            <TextBlock Text="Accento principale" Classes="muted"/>
+                            <TextBox Text="{Binding AccentColorHex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                            <TextBlock Text="Accento chiaro (bordi/hover)" Classes="muted"/>
+                            <TextBox Text="{Binding AccentBrightColorHex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                            <TextBlock Text="Energia (gradiente secondario)" Classes="muted"/>
+                            <TextBox Text="{Binding EnergyColorHex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,10">
+                            <TextBlock Text="Testo pulsanti principali" Classes="muted"/>
+                            <TextBox Text="{Binding ButtonTextColorHex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Sfondo finestra" Classes="muted"/>
+                            <TextBox Text="{Binding BackgroundColorHex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="Sfondo pannelli/card" Classes="muted"/>
+                            <TextBox Text="{Binding PanelColorHex}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="STILE PULSANTI" Classes="section" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                        <RadioButton Content="Piatto (2D)" GroupName="btnstyle"
+                                     IsChecked="{Binding ButtonStyle, Converter={StaticResource EnumEquals}, ConverterParameter=Flat}"/>
+                        <RadioButton Content="Rialzato (ombra 3D)" GroupName="btnstyle"
+                                     IsChecked="{Binding ButtonStyle, Converter={StaticResource EnumEquals}, ConverterParameter=Raised}"/>
+                        <RadioButton Content="Bagliore al passaggio del mouse" GroupName="btnstyle"
+                                     IsChecked="{Binding ButtonStyle, Converter={StaticResource EnumEquals}, ConverterParameter=Glow}"/>
+                    </StackPanel>
+                    <TextBlock Text="Anteprima:" Classes="muted" Margin="0,14,0,6"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Pulsante normale"/>
+                        <Button Content="Pulsante principale" Classes="primary"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="EMBLEMA ANIMATO (SCHERMATA HOME)" Classes="section" Margin="0,0,0,10"/>
+                    <CheckBox Content="Ruota l'emblema" IsChecked="{Binding LogoRotationEnabled}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Posizione rispetto al titolo" Classes="muted" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,0,0,14">
+                        <RadioButton Content="Sopra il titolo" GroupName="logopos"
+                                     IsChecked="{Binding LogoPos, Converter={StaticResource EnumEquals}, ConverterParameter=AboveTitle}"/>
+                        <RadioButton Content="Dietro al titolo" GroupName="logopos"
+                                     IsChecked="{Binding LogoPos, Converter={StaticResource EnumEquals}, ConverterParameter=BehindTitle}"/>
+                        <RadioButton Content="Nascosto" GroupName="logopos"
+                                     IsChecked="{Binding LogoPos, Converter={StaticResource EnumEquals}, ConverterParameter=Hidden}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Asse di rotazione" Classes="muted" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,0,0,14">
+                        <RadioButton Content="Piatto (Z, come una ruota)" GroupName="logoaxis"
+                                     IsChecked="{Binding LogoAxis, Converter={StaticResource EnumEquals}, ConverterParameter=Z}"/>
+                        <RadioButton Content="Verticale (Y)" GroupName="logoaxis"
+                                     IsChecked="{Binding LogoAxis, Converter={StaticResource EnumEquals}, ConverterParameter=Y}"/>
+                        <RadioButton Content="Orizzontale (X)" GroupName="logoaxis"
+                                     IsChecked="{Binding LogoAxis, Converter={StaticResource EnumEquals}, ConverterParameter=X}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding LogoSize, StringFormat='Dimensione: {0:0} px'}" Classes="muted" Margin="0,0,0,2"/>
+                    <Slider Minimum="80" Maximum="600" Value="{Binding LogoSize}" TickFrequency="20" Margin="0,0,0,14"/>
+
+                    <TextBlock Text="{Binding LogoRotationSeconds, StringFormat='Velocita\': un giro ogni {0} secondi'}" Classes="muted" Margin="0,0,0,2"/>
+                    <Slider Minimum="5" Maximum="300" Value="{Binding LogoRotationSeconds}" TickFrequency="5"/>
+
+                    <TextBlock Text="Vai in Home per vedere l'emblema con le impostazioni correnti." Classes="muted" FontStyle="Italic" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Sfondo schermata Home ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="SFONDO SCHERMATA HOME" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="Sfondo dedicato SOLO alla schermata Home: resta sempre lo stesso, indipendente dallo sfondo generale usato nelle altre schermate."/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+                        <Button Content="Scegli immagine..." Command="{Binding BrowseHomeBackgroundImageCommand}"/>
+                        <Button Content="Rimuovi" Command="{Binding ClearHomeBackgroundImageCommand}" IsVisible="{Binding HasHomeBackgroundImage}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Predefiniti inclusi nell'app (clic per usarli):" Classes="muted" Margin="0,0,0,6"/>
+                    <ItemsControl ItemsSource="{Binding PresetBackgroundImages}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Padding="2" Margin="0,0,6,6"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectPresetHomeBackgroundCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Galleria (immagini importate in passato):" Classes="muted" Margin="10,4,0,6"/>
+                    <ItemsControl ItemsSource="{Binding HomeBackgroundImageHistory}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,6,6">
+                                    <Button Padding="2"
+                                            Command="{Binding $parent[UserControl].DataContext.SelectHomeBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                    </Button>
+                                    <Button Content="✕" Padding="2,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                            Command="{Binding $parent[UserControl].DataContext.RemoveHomeBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="{Binding HomeBackgroundImageOpacity, StringFormat='Opacita\': {0:P0}'}" Classes="muted" Margin="0,10,0,2"/>
+                    <Slider Minimum="0" Maximum="1" Value="{Binding HomeBackgroundImageOpacity}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Adattamento" Classes="muted" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <RadioButton Content="Riempi (ritaglia)" GroupName="homefit"
+                                     IsChecked="{Binding HomeBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=UniformToFill}"/>
+                        <RadioButton Content="Adatta (senza ritaglio)" GroupName="homefit"
+                                     IsChecked="{Binding HomeBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Uniform}"/>
+                        <RadioButton Content="Estendi (deforma)" GroupName="homefit"
+                                     IsChecked="{Binding HomeBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Fill}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Sfondo generale ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="SFONDO GENERALE" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="Copre tutte le schermate tranne la Home (che ha il suo sfondo dedicato qui sopra)."/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+                        <Button Content="Scegli immagine..." Command="{Binding BrowseBackgroundImageCommand}"/>
+                        <Button Content="Rimuovi" Command="{Binding ClearBackgroundImageCommand}" IsVisible="{Binding HasBackgroundImage}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Predefiniti inclusi nell'app (clic per usarli):" Classes="muted" Margin="0,0,0,6"/>
+                    <ItemsControl ItemsSource="{Binding PresetBackgroundImages}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Padding="2" Margin="0,0,6,6"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectPresetBackgroundCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Galleria (immagini importate in passato):" Classes="muted" Margin="10,4,0,6"/>
+                    <ItemsControl ItemsSource="{Binding BackgroundImageHistory}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,6,6">
+                                    <Button Padding="2"
+                                            Command="{Binding $parent[UserControl].DataContext.SelectBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                    </Button>
+                                    <Button Content="✕" Padding="2,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                            Command="{Binding $parent[UserControl].DataContext.RemoveBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="{Binding BackgroundImageOpacity, StringFormat='Opacita\': {0:P0}'}" Classes="muted" Margin="0,10,0,2"/>
+                    <Slider Minimum="0" Maximum="1" Value="{Binding BackgroundImageOpacity}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Adattamento" Classes="muted" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <RadioButton Content="Riempi (ritaglia)" GroupName="bgfit"
+                                     IsChecked="{Binding BackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=UniformToFill}"/>
+                        <RadioButton Content="Adatta (senza ritaglio)" GroupName="bgfit"
+                                     IsChecked="{Binding BackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Uniform}"/>
+                        <RadioButton Content="Estendi (deforma)" GroupName="bgfit"
+                                     IsChecked="{Binding BackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Fill}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Sfondo pulsanti ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="SFONDO PULSANTI" Classes="section" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+                        <Button Content="Scegli immagine..." Command="{Binding BrowseButtonBackgroundImageCommand}"/>
+                        <Button Content="Rimuovi" Command="{Binding ClearButtonBackgroundImageCommand}" IsVisible="{Binding HasButtonBackgroundImage}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Predefiniti inclusi nell'app (clic per usarli):" Classes="muted" Margin="0,0,0,6"/>
+                    <ItemsControl ItemsSource="{Binding PresetButtonBackgroundImages}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Padding="2" Margin="0,0,6,6"
+                                        Command="{Binding $parent[UserControl].DataContext.SelectPresetButtonBackgroundCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Galleria (immagini importate in passato):" Classes="muted" Margin="10,4,0,6"/>
+                    <ItemsControl ItemsSource="{Binding ButtonBackgroundImageHistory}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,6,6">
+                                    <Button Padding="2"
+                                            Command="{Binding $parent[UserControl].DataContext.SelectButtonBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Image Source="{Binding Converter={StaticResource PathToBitmap}}" Width="70" Height="46" Stretch="UniformToFill"/>
+                                    </Button>
+                                    <Button Content="✕" Padding="2,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                            Command="{Binding $parent[UserControl].DataContext.RemoveButtonBackgroundFromHistoryCommand}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="{Binding ButtonBackgroundImageOpacity, StringFormat='Opacita\': {0:P0}'}" Classes="muted" Margin="0,10,0,2"/>
+                    <Slider Minimum="0" Maximum="1" Value="{Binding ButtonBackgroundImageOpacity}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Adattamento" Classes="muted" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <RadioButton Content="Riempi (ritaglia)" GroupName="btnfit"
+                                     IsChecked="{Binding ButtonBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=UniformToFill}"/>
+                        <RadioButton Content="Adatta (senza ritaglio)" GroupName="btnfit"
+                                     IsChecked="{Binding ButtonBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Uniform}"/>
+                        <RadioButton Content="Estendi (deforma)" GroupName="btnfit"
+                                     IsChecked="{Binding ButtonBackgroundImageFit, Converter={StaticResource EnumEquals}, ConverterParameter=Fill}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== Suoni interfaccia ===================== -->
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="SUONI INTERFACCIA" Classes="section" Margin="0,0,0,10"/>
+                    <CheckBox Content="Suoni sci-fi al passaggio del mouse e al clic (sintetici, nessun contenuto originale di Quake III)"
+                              IsChecked="{Binding UiSoundsEnabled}"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Applica e salva" Classes="primary" Command="{Binding ApplyAndSaveCommand}"/>
+                <Button Content="Ripristina predefinito" Command="{Binding ResetToDefaultsCommand}"/>
+            </StackPanel>
+            <TextBlock Text="{Binding StatusMessage}" Classes="muted" TextWrapping="Wrap" Margin="0,10,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

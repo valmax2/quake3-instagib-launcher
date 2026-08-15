@@ -1,0 +1,290 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ===================== Barra di navigazione ===================== -->
+    <system:String x:Key="Str.App.Brand1">QUAKE III</system:String>
+    <system:String x:Key="Str.App.Brand2">:: INSTAGIB LAUNCHER</system:String>
+    <system:String x:Key="Str.Nav.Home">HOME</system:String>
+    <system:String x:Key="Str.Nav.Local">LOCALE</system:String>
+    <system:String x:Key="Str.Nav.Multiplayer">MULTIPLAYER</system:String>
+    <system:String x:Key="Str.Nav.Settings">IMPOSTAZIONI</system:String>
+    <system:String x:Key="Str.Nav.Diagnostics">DIAGNOSTICA</system:String>
+    <system:String x:Key="Str.Nav.Help">GUIDA</system:String>
+    <system:String x:Key="Str.Nav.Customize">PERSONALIZZA</system:String>
+    <system:String x:Key="Str.Nav.Players">GIOCATORI</system:String>
+    <system:String x:Key="Str.Nav.KeyBindings">TASTI</system:String>
+    <system:String x:Key="Str.Nav.PlayerProfile">PERSONAGGIO</system:String>
+
+    <!-- ===================== Home ===================== -->
+    <system:String x:Key="Str.Home.Subtitle">⚔ INSTAGIB LAUNCHER ⚔</system:String>
+    <system:String x:Key="Str.Home.LocalButton">⚔  LOCALE INSTAGIB</system:String>
+    <system:String x:Key="Str.Home.MultiplayerButton">🌐  MULTIPLAYER INSTAGIB</system:String>
+    <system:String x:Key="Str.Home.HelpButton">📥  GUIDA E DOWNLOAD</system:String>
+
+    <!-- ===================== Selettore lingua ===================== -->
+    <system:String x:Key="Str.Language.Tooltip">Lingua / Language</system:String>
+
+    <!-- ===================== Condivisi tra piu' schermate ===================== -->
+    <system:String x:Key="Str.Common.BrowseImage">Scegli immagine...</system:String>
+    <system:String x:Key="Str.Common.BrowseImageOrGif">Scegli immagine o GIF...</system:String>
+    <system:String x:Key="Str.Common.Remove">Rimuovi</system:String>
+    <system:String x:Key="Str.Common.PresetsHeader">Predefiniti inclusi nell'app (clic per usarli):</system:String>
+    <system:String x:Key="Str.Common.GalleryHeader">Galleria (clic per riusare, ✕ per eliminare):</system:String>
+    <system:String x:Key="Str.Common.FitLabel">Adattamento</system:String>
+    <system:String x:Key="Str.Common.FitFill">Riempi (ritaglia)</system:String>
+    <system:String x:Key="Str.Common.FitUniform">Adatta (senza ritaglio)</system:String>
+    <system:String x:Key="Str.Common.FitStretch">Estendi (deforma)</system:String>
+    <system:String x:Key="Str.Common.CurrentFileFormat">File attuale: {0}</system:String>
+    <system:String x:Key="Str.Common.OpacityFormat">Opacita': {0:P0}</system:String>
+    <system:String x:Key="Str.Common.PreviewLabel">Anteprima:</system:String>
+    <system:String x:Key="Str.Common.GameModeFfa">Deathmatch (FFA)</system:String>
+    <system:String x:Key="Str.Common.GameModeTeam">Team Deathmatch</system:String>
+    <system:String x:Key="Str.Common.GameModeTournament">Torneo (1v1)</system:String>
+    <system:String x:Key="Str.Common.GameModeCtf">Cattura la Bandiera (CTF)</system:String>
+    <system:String x:Key="Str.Common.ModeLabel">MODALITA'</system:String>
+    <system:String x:Key="Str.Common.FragLimit">Fraglimit</system:String>
+    <system:String x:Key="Str.Common.TimeLimitMin">Timelimit (min)</system:String>
+    <system:String x:Key="Str.Common.FovFormat">FOV: {0}</system:String>
+    <system:String x:Key="Str.Common.UseInstaGib">Usa mod InstaGib129 (fs_game)</system:String>
+    <system:String x:Key="Str.Common.SvPureOff">sv_pure 0 (consigliato con mod)</system:String>
+    <system:String x:Key="Str.Common.MaxPlayers">Giocatori max</system:String>
+    <system:String x:Key="Str.Common.Port">Porta UDP</system:String>
+    <system:String x:Key="Str.Common.PasswordOptional">Password (facoltativa)</system:String>
+    <system:String x:Key="Str.Common.NoMapSelected">Nessuna mappa selezionata</system:String>
+
+    <!-- ===================== Galleria mappe ===================== -->
+    <system:String x:Key="Str.MapGallery.FilterCustom">personalizzate</system:String>
+    <system:String x:Key="Str.MapGallery.FavoritesOnly">★ solo preferite</system:String>
+    <system:String x:Key="Str.MapGallery.RotationTitle">ROTAZIONE MAPPE</system:String>
+    <system:String x:Key="Str.MapGallery.RotationEmpty">Vuota: si gioca solo la mappa selezionata a sinistra.</system:String>
+    <system:String x:Key="Str.MapGallery.RotationPreviewTooltip">Clic per l'anteprima della mappa</system:String>
+    <system:String x:Key="Str.MapGallery.ClearRotation">Svuota rotazione</system:String>
+    <system:String x:Key="Str.MapGallery.AddToRotation">+ rotazione</system:String>
+    <system:String x:Key="Str.MapGallery.LastUsedBadge">ULTIMA USATA</system:String>
+    <system:String x:Key="Str.MapGallery.ClickToClose">Clicca in un punto qualsiasi per chiudere</system:String>
+
+    <!-- ===================== Locale ===================== -->
+    <system:String x:Key="Str.Local.Title">PARTITA LOCALE</system:String>
+    <system:String x:Key="Str.Local.IncompatibleWarning">⚠ La mappa selezionata potrebbe non supportare questa modalita'.</system:String>
+    <system:String x:Key="Str.Local.PlayersAndBots">GIOCATORI E BOT</system:String>
+    <system:String x:Key="Str.Local.TotalPlayers">Giocatori totali (tu incluso)</system:String>
+    <system:String x:Key="Str.Local.BotCountFormat">→ {0} bot in partita</system:String>
+    <system:String x:Key="Str.Local.BotDifficulty">Difficolta' bot</system:String>
+    <system:String x:Key="Str.Local.Rules">REGOLE</system:String>
+    <system:String x:Key="Str.Local.StartButton">AVVIA PARTITA LOCALE</system:String>
+
+    <!-- ===================== Multiplayer ===================== -->
+    <system:String x:Key="Str.Multiplayer.HostTab">🖥 OSPITA</system:String>
+    <system:String x:Key="Str.Multiplayer.JoinTab">🔍 CERCA E UNISCITI</system:String>
+    <system:String x:Key="Str.Multiplayer.HostTitle">MULTIPLAYER (host su questo PC)</system:String>
+    <system:String x:Key="Str.Multiplayer.ServerPresets">PRESET SERVER</system:String>
+    <system:String x:Key="Str.Multiplayer.LoadPreset">Carica</system:String>
+    <system:String x:Key="Str.Multiplayer.DeletePreset">Elimina</system:String>
+    <system:String x:Key="Str.Multiplayer.PresetNameTooltip">Nome preset (vuoto = usa il nome server corrente)</system:String>
+    <system:String x:Key="Str.Multiplayer.SavePreset">💾 Salva impostazioni correnti come preset</system:String>
+    <system:String x:Key="Str.Multiplayer.ServerName">Nome server</system:String>
+    <system:String x:Key="Str.Multiplayer.BotsEnable">Abilita bot di riempimento</system:String>
+    <system:String x:Key="Str.Multiplayer.MinPlayersFormat">Giocatori minimi (bot inclusi): {0}</system:String>
+    <system:String x:Key="Str.Multiplayer.Visibility">VISIBILITA' SERVER</system:String>
+    <system:String x:Key="Str.Multiplayer.LanOnly">Solo rete locale (LAN)</system:String>
+    <system:String x:Key="Str.Multiplayer.AlsoInternet">Anche da Internet</system:String>
+    <system:String x:Key="Str.Multiplayer.InternetInfoTitle">Per accettare connessioni da Internet:</system:String>
+    <system:String x:Key="Str.Multiplayer.InternetInfo1">• Consenti ioquake3.x86_64.exe nel Firewall di Windows</system:String>
+    <system:String x:Key="Str.Multiplayer.FirewallAlreadyAllowed">✅ Già consentito nel Firewall di Windows</system:String>
+    <system:String x:Key="Str.Multiplayer.FirewallRecheck">🔄 Ricontrolla</system:String>
+    <system:String x:Key="Str.Multiplayer.InternetInfo2">• Inoltra la porta UDP scelta dal router al PC</system:String>
+    <system:String x:Key="Str.Multiplayer.InternetInfo3">• Comunica agli amici il tuo IP pubblico e la porta</system:String>
+    <system:String x:Key="Str.Multiplayer.InternetInfo4">Il launcher non modifica firewall o router automaticamente.</system:String>
+    <system:String x:Key="Str.Multiplayer.StartButton">AVVIA MULTIPLAYER</system:String>
+    <system:String x:Key="Str.Multiplayer.WhatsAppInvite">📱 Invita via WhatsApp</system:String>
+    <system:String x:Key="Str.Multiplayer.FindMatch">TROVA UNA PARTITA</system:String>
+    <system:String x:Key="Str.Multiplayer.SearchLan">🔎 Cerca sulla rete locale (LAN)</system:String>
+    <system:String x:Key="Str.Multiplayer.SearchInternet">🌐 Cerca su Internet (best-effort)</system:String>
+    <system:String x:Key="Str.Multiplayer.FiltersHeader">FILTRI</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterModeHint">Modalita' (nessuna selezionata = tutte)</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterTournament">Torneo/Duel</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterInstaGibOnly">Solo server InstaGib</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterHideFull">Nascondi server pieni</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterHideEmpty">Nascondi server vuoti</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterMaxPingFormat">Ping massimo: {0} ms</system:String>
+    <system:String x:Key="Str.Multiplayer.SortByPlayers">Ordina per numero di giocatori (invece che per ping)</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterKnownOnly">⭐ Solo server con giocatori conosciuti</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterHideBotOnly">🤖 Nascondi server con soli bot</system:String>
+    <system:String x:Key="Str.Multiplayer.FilterHideBotOnlyHint">Serve prima "Carica giocatori" qui sotto: senza quel dato il filtro non nasconde nulla.</system:String>
+    <system:String x:Key="Str.Multiplayer.HumansLabel"> umani</system:String>
+    <system:String x:Key="Str.Multiplayer.BotsLabel"> bot</system:String>
+    <system:String x:Key="Str.Multiplayer.LoadPlayers">👥 Carica giocatori (chi sta giocando adesso)</system:String>
+    <system:String x:Key="Str.Multiplayer.KnownHereFormat">⭐ Conosciuto/i qui: </system:String>
+    <system:String x:Key="Str.Multiplayer.RememberPlayerTooltip">Salva tra i giocatori conosciuti</system:String>
+    <system:String x:Key="Str.Multiplayer.SelectedFormat">Selezionato: {0}</system:String>
+    <system:String x:Key="Str.Multiplayer.NoServerSelected">Nessun server selezionato</system:String>
+    <system:String x:Key="Str.Multiplayer.PasswordIfNeeded">Password (se richiesta dal server)</system:String>
+    <system:String x:Key="Str.Multiplayer.JoinButton">UNISCITI AL SERVER</system:String>
+    <system:String x:Key="Str.Multiplayer.DoubleClickJoinTooltip">Doppio clic per unirti subito a questo server</system:String>
+
+    <!-- ===================== Impostazioni ===================== -->
+    <system:String x:Key="Str.Settings.Title">IMPOSTAZIONI</system:String>
+    <system:String x:Key="Str.Settings.InstallationHeader">INSTALLAZIONE IOQUAKE3</system:String>
+    <system:String x:Key="Str.Settings.GameFolder">Cartella di gioco</system:String>
+    <system:String x:Key="Str.Settings.Browse">Sfoglia...</system:String>
+    <system:String x:Key="Str.Settings.ApplyPath">Applica percorso e verifica</system:String>
+    <system:String x:Key="Str.Settings.OpenGameFolder">Apri cartella ioquake3</system:String>
+    <system:String x:Key="Str.Settings.OpenBaseQ3Folder">Apri cartella baseq3</system:String>
+    <system:String x:Key="Str.Settings.OpenModFolder">Apri cartella mod InstaGib129</system:String>
+    <system:String x:Key="Str.Settings.OpenMissionPackFolder">Apri cartella missionpack</system:String>
+    <system:String x:Key="Str.Settings.GamePreferences">PREFERENZE DI GIOCO</system:String>
+    <system:String x:Key="Str.Settings.DefaultFovFormat">Campo visivo predefinito (FOV): {0}</system:String>
+    <system:String x:Key="Str.Settings.VideoHeader">VIDEO E RISOLUZIONE</system:String>
+    <system:String x:Key="Str.Settings.FixAspectRatio">Correggi automaticamente la risoluzione (evita le barre nere laterali)</system:String>
+    <system:String x:Key="Str.Settings.FixAspectRatioInfo">Il gioco a volte tiene una vecchia modalita' video 4:3 salvata nel suo file di configurazione, che produce le barre nere ai lati anche su monitor widescreen. Attivando questa opzione, il launcher impone sempre la risoluzione corretta all'avvio.</system:String>
+    <system:String x:Key="Str.Settings.WidthPx">Larghezza (px)</system:String>
+    <system:String x:Key="Str.Settings.HeightPx">Altezza (px)</system:String>
+    <system:String x:Key="Str.Settings.DetectResolution">Rileva automaticamente</system:String>
+    <system:String x:Key="Str.Settings.Fullscreen">Schermo intero</system:String>
+    <system:String x:Key="Str.Settings.VoiceHeader">CHAT VOCALE (STEAM)</system:String>
+    <system:String x:Key="Str.Settings.VoiceInfo">Per parlare con un amico durante una partita usa la chat vocale di Steam: cerca l'amico dal client, oppure incolla qui il suo SteamID64 o il link al profilo per aprire la chat direttamente.</system:String>
+    <system:String x:Key="Str.Settings.SteamFriendIdLabel">SteamID64 o link profilo amico</system:String>
+    <system:String x:Key="Str.Settings.SteamSearch">🔍 Cerca amico su Steam</system:String>
+    <system:String x:Key="Str.Settings.SteamStartChat">💬 Avvia chat</system:String>
+    <system:String x:Key="Str.Settings.CacheHeader">CACHE MAPPE E ANTEPRIME</system:String>
+    <system:String x:Key="Str.Settings.CacheInfo">Le anteprime vengono convertite ed elaborate una sola volta e salvate in %APPDATA%\Quake3InstaGibLauncher\cache. I file .pk3 originali non vengono mai modificati.</system:String>
+    <system:String x:Key="Str.Settings.RefreshMaps">🔄 Aggiorna mappe</system:String>
+    <system:String x:Key="Str.Settings.ClearCache">🗑 Cancella cache anteprime</system:String>
+    <system:String x:Key="Str.Settings.ResetHeader">RIPRISTINO</system:String>
+    <system:String x:Key="Str.Settings.ResetDefaults">Ripristina impostazioni predefinite</system:String>
+
+    <!-- ===================== Diagnostica ===================== -->
+    <system:String x:Key="Str.Diagnostics.Title">DIAGNOSTICA</system:String>
+    <system:String x:Key="Str.Diagnostics.VersionLabel">Versione:</system:String>
+    <system:String x:Key="Str.Diagnostics.InstallChecks">CONTROLLI INSTALLAZIONE</system:String>
+    <system:String x:Key="Str.Diagnostics.ScanWarnings">AVVISI DI SCANSIONE .PK3</system:String>
+    <system:String x:Key="Str.Diagnostics.LastCommand">ULTIMO COMANDO GENERATO</system:String>
+    <system:String x:Key="Str.Diagnostics.LastCfg">ULTIMO FILE DI ROTAZIONE (.cfg)</system:String>
+    <system:String x:Key="Str.Diagnostics.AppDataFolder">CARTELLA DATI APP</system:String>
+    <system:String x:Key="Str.Diagnostics.PrivacyNote">Nessuna CD key, password o dato sensibile viene mai salvato qui: solo impostazioni, cache anteprime e log di errore tecnico.</system:String>
+
+    <!-- ===================== Guida ===================== -->
+    <system:String x:Key="Str.Help.Title">GUIDA E DOWNLOAD</system:String>
+    <system:String x:Key="Str.Help.Intro">Questo launcher non scarica o installa nulla automaticamente: qui trovi solo i link ufficiali dei componenti necessari e i passi per sistemarli nella struttura di cartelle che l'app si aspetta.</system:String>
+    <system:String x:Key="Str.Help.DownloadsHeader">DOVE SCARICARE I COMPONENTI</system:String>
+    <system:String x:Key="Str.Help.OpenLink">Apri ↗</system:String>
+    <system:String x:Key="Str.Help.QuickInstallHeader">GUIDA RAPIDA ALL'INSTALLAZIONE</system:String>
+    <system:String x:Key="Str.Help.SupportHeader">ASSISTENZA</system:String>
+    <system:String x:Key="Str.Help.Support1">Se l'indicatore in alto e' rosso o la Home segnala un'installazione incompleta, vai nella schermata Diagnostica: elenca esattamente quale file o cartella manca.</system:String>
+    <system:String x:Key="Str.Help.Support2">Se le mappe non compaiono o le anteprime sono mancanti, prova Impostazioni → Aggiorna mappe. Se il problema persiste, Impostazioni → Cancella cache anteprime e poi Aggiorna mappe di nuovo.</system:String>
+    <system:String x:Key="Str.Help.Support3">Per il multiplayer da Internet, ricorda: firewall di Windows, port forwarding sul router e indirizzo IP pubblico non vengono gestiti automaticamente da questa app (vedi il riquadro informativo nella schermata Multiplayer).</system:String>
+    <system:String x:Key="Str.Help.CreditsHeader">SVILUPPATORE</system:String>
+    <system:String x:Key="Str.Help.CreditsEmailLabel">Richieste, segnalazioni o correzioni:</system:String>
+    <system:String x:Key="Str.Help.CreditsEmailButton">✉ Scrivi</system:String>
+    <system:String x:Key="Str.Help.CreditsDonateInfo">Se il launcher ti è utile, puoi offrire un caffè allo sviluppatore.</system:String>
+    <system:String x:Key="Str.Help.CreditsDonateButton">💛 Fai una donazione (PayPal)</system:String>
+    <system:String x:Key="Str.Help.CreditsDonatePrefix">Dona con </system:String>
+    <system:String x:Key="Str.Help.CreditsDonateNavLabel">Dona</system:String>
+
+    <!-- ===================== Personalizza ===================== -->
+    <system:String x:Key="Str.Customize.Title">PERSONALIZZA INTERFACCIA</system:String>
+    <system:String x:Key="Str.Customize.Intro">Le modifiche si vedono subito in tutta l'app.</system:String>
+    <system:String x:Key="Str.Customize.QuickPalette">PALETTE RAPIDE</system:String>
+    <system:String x:Key="Str.Customize.ColorsHeader">COLORI (formato #RRGGBB)</system:String>
+    <system:String x:Key="Str.Customize.AccentMain">Accento principale</system:String>
+    <system:String x:Key="Str.Customize.AccentBright">Accento chiaro (bordi/hover)</system:String>
+    <system:String x:Key="Str.Customize.Energy">Energia (gradiente secondario)</system:String>
+    <system:String x:Key="Str.Customize.ButtonText">Testo pulsanti principali</system:String>
+    <system:String x:Key="Str.Customize.WindowBg">Sfondo finestra</system:String>
+    <system:String x:Key="Str.Customize.PanelBg">Sfondo pannelli/card</system:String>
+    <system:String x:Key="Str.Customize.ButtonStyleHeader">STILE PULSANTI</system:String>
+    <system:String x:Key="Str.Customize.StyleFlat">Piatto (2D)</system:String>
+    <system:String x:Key="Str.Customize.StyleRaised">Rialzato (ombra 3D)</system:String>
+    <system:String x:Key="Str.Customize.StyleGlow">Bagliore al passaggio del mouse</system:String>
+    <system:String x:Key="Str.Customize.PreviewNormalButton">Pulsante normale</system:String>
+    <system:String x:Key="Str.Customize.PreviewMainButton">Pulsante principale</system:String>
+    <system:String x:Key="Str.Customize.SoundsToggle">🔊 Suoni sci-fi al passaggio del mouse e al clic</system:String>
+    <system:String x:Key="Str.Customize.SoundsInfo">Toni sintetici generati dall'app, non i suoni originali di Quake III (protetti da copyright).</system:String>
+    <system:String x:Key="Str.Customize.EmblemHeader">EMBLEMA ANIMATO (SCHERMATA HOME)</system:String>
+    <system:String x:Key="Str.Customize.RotateEmblem">Ruota l'emblema</system:String>
+    <system:String x:Key="Str.Customize.PositionVsTitle">Posizione rispetto al titolo</system:String>
+    <system:String x:Key="Str.Customize.AboveTitle">Sopra il titolo</system:String>
+    <system:String x:Key="Str.Customize.BehindTitle">Dietro al titolo</system:String>
+    <system:String x:Key="Str.Customize.Hidden">Nascosto</system:String>
+    <system:String x:Key="Str.Customize.RotationAxis">Asse di rotazione</system:String>
+    <system:String x:Key="Str.Customize.AxisFlat">Piatto (Z, come una ruota)</system:String>
+    <system:String x:Key="Str.Customize.AxisVertical">Verticale (Y, si gira come una porta)</system:String>
+    <system:String x:Key="Str.Customize.AxisHorizontal">Orizzontale (X, si ribalta su e giu')</system:String>
+    <system:String x:Key="Str.Customize.SizeFormat">Dimensione: {0:0} px</system:String>
+    <system:String x:Key="Str.Customize.SpeedFormat">Velocita': un giro ogni {0} secondi</system:String>
+    <system:String x:Key="Str.Customize.SeeInHome">Vai in Home per vedere l'emblema con le impostazioni correnti.</system:String>
+    <system:String x:Key="Str.Customize.ImagesHeader">IMMAGINI PERSONALIZZATE</system:String>
+    <system:String x:Key="Str.Customize.ImagesInfo">Carica un logo (immagine trasparente o GIF animata trasparente), uno sfondo per la finestra e uno sfondo dedicato ai pulsanti. Le immagini vengono copiate e ridimensionate dentro l'app: l'originale sul tuo disco non viene toccato.</system:String>
+    <system:String x:Key="Str.Customize.MaxImportRes">Risoluzione massima di importazione (lato piu' lungo)</system:String>
+    <system:String x:Key="Str.Customize.LogoHeader">LOGO PERSONALIZZATO</system:String>
+    <system:String x:Key="Str.Customize.LogoInfo">Sostituisce l'emblema vettoriale in Home. Usa un PNG trasparente per un logo statico o una GIF trasparente per un logo animato.</system:String>
+    <system:String x:Key="Str.Customize.LogoRemove">Rimuovi (torna al logo originale)</system:String>
+    <system:String x:Key="Str.Customize.NoLogoFallback">Nessun logo personalizzato: in uso l'emblema vettoriale originale.</system:String>
+    <system:String x:Key="Str.Customize.GifDetected">Animazione GIF rilevata: verra' riprodotta ciclicamente.</system:String>
+    <system:String x:Key="Str.Customize.WindowBgHeader">SFONDO FINESTRA PRINCIPALE</system:String>
+    <system:String x:Key="Str.Customize.NoWindowBgFallback">Nessuno sfondo personalizzato: in uso il colore pieno.</system:String>
+    <system:String x:Key="Str.Customize.HomeBgHeader">SFONDO SCHERMATA HOME</system:String>
+    <system:String x:Key="Str.Customize.HomeBgInfo">Sfondo dedicato SOLO alla schermata Home (sostituisce la texture metallo/ruggine originale): resta sempre lo stesso, indipendente dallo sfondo generale usato nelle altre schermate.</system:String>
+    <system:String x:Key="Str.Customize.NoHomeBgFallback">Nessuno sfondo Home personalizzato: in uso la texture originale.</system:String>
+    <system:String x:Key="Str.Customize.ButtonBgHeader">SFONDO PULSANTI</system:String>
+    <system:String x:Key="Str.Customize.NoButtonBgFallback">Nessuno sfondo personalizzato: in uso il colore pannello.</system:String>
+    <system:String x:Key="Str.Customize.SampleButton">Pulsante di esempio</system:String>
+    <system:String x:Key="Str.Customize.ApplyAndSave">Applica e salva</system:String>
+    <system:String x:Key="Str.Customize.ResetDefaults">Ripristina predefinito</system:String>
+
+    <!-- ===================== Giocatori ===================== -->
+    <system:String x:Key="Str.Players.Title">GIOCATORI CONOSCIUTI</system:String>
+    <system:String x:Key="Str.Players.Intro">Salva i giocatori che incontri in partita. In MULTIPLAYER, dopo una ricerca server, puoi caricare i giocatori presenti e vedere subito se in un server c'e' qualcuno che conosci — utile soprattutto per stanare i giocatori Forti e sfidarli di nuovo.</system:String>
+    <system:String x:Key="Str.Players.AddHeader">AGGIUNGI GIOCATORE</system:String>
+    <system:String x:Key="Str.Players.NameLabel">Nome (come appare in partita)</system:String>
+    <system:String x:Key="Str.Players.RatingLabel">Valutazione</system:String>
+    <system:String x:Key="Str.Players.Add">Aggiungi</system:String>
+    <system:String x:Key="Str.Players.ListFormat">ELENCO ({0})</system:String>
+    <system:String x:Key="Str.Players.EmptyHint">Nessun giocatore salvato ancora. Aggiungine uno qui sopra, oppure vai in MULTIPLAYER, cerca dei server e usa "Carica giocatori".</system:String>
+    <system:String x:Key="Str.Players.NotesLabel">Note (arma preferita, dove gioca di solito...)</system:String>
+    <system:String x:Key="Str.Players.Remove">Rimuovi</system:String>
+    <system:String x:Key="Str.Players.ShareGamertag">📱 Invita un amico via WhatsApp (invia il tuo gamertag)</system:String>
+
+    <!-- ===================== Tasti ===================== -->
+    <system:String x:Key="Str.KeyBindings.Title">TASTI E COMANDI</system:String>
+    <system:String x:Key="Str.KeyBindings.Intro">Comandi gia' preimpostati (spunta quelli che vuoi usare, cambia il tasto se vuoi) piu' la possibilita' di aggiungerne di tuoi. Vengono applicati automaticamente ad ogni avvio, sia in Locale sia in Multiplayer.</system:String>
+    <system:String x:Key="Str.KeyBindings.ColActive">Attivo</system:String>
+    <system:String x:Key="Str.KeyBindings.ColCommand">Comando</system:String>
+    <system:String x:Key="Str.KeyBindings.ColKey">Tasto</system:String>
+    <system:String x:Key="Str.KeyBindings.ResetPresets">Ripristina tasti predefiniti</system:String>
+    <system:String x:Key="Str.KeyBindings.AddCustomHeader">AGGIUNGI COMANDO PERSONALIZZATO</system:String>
+    <system:String x:Key="Str.KeyBindings.AddCustomInfo">Qualsiasi comando della console Quake III (es. +attack, vstr taunt1, cg_thirdperson 1).</system:String>
+    <system:String x:Key="Str.KeyBindings.OpenReference">📋 Elenco comandi e frasi da copiare</system:String>
+    <system:String x:Key="Str.KeyBindings.RefWindowTitle">Comandi e frasi copiabili</system:String>
+    <system:String x:Key="Str.KeyBindings.RefWindowInfo">Clicca 📋 per copiare il comando, poi incollalo nel campo "Comando" qui sopra per creare un tasto personalizzato.</system:String>
+    <system:String x:Key="Str.KeyBindings.RefCopyTooltip">Copia negli appunti</system:String>
+    <system:String x:Key="Str.KeyBindings.RefClose">Chiudi</system:String>
+    <system:String x:Key="Str.KeyBindings.DescriptionOptional">Descrizione (facoltativa)</system:String>
+    <system:String x:Key="Str.KeyBindings.Add">Aggiungi</system:String>
+    <system:String x:Key="Str.KeyBindings.ResetSingleTooltip">Ripristina solo questo al valore predefinito</system:String>
+    <system:String x:Key="Str.KeyBindings.ConsoleHeader">COMANDI CONSOLE</system:String>
+    <system:String x:Key="Str.KeyBindings.ConsoleInfo">Movimento, azioni, voti e cambio arma. Applicati automaticamente ad ogni avvio, sia in Locale sia in Multiplayer.</system:String>
+    <system:String x:Key="Str.KeyBindings.ChatHeader">MESSAGGI CHAT RAPIDI</system:String>
+    <system:String x:Key="Str.KeyBindings.ChatInfo">Un tasto, un messaggio gia' scritto in chat (say/say_team) — niente da digitare a partita in corso.</system:String>
+    <system:String x:Key="Str.KeyBindings.ColMessage">Messaggio</system:String>
+    <system:String x:Key="Str.KeyBindings.ColCategory">Tipo</system:String>
+    <system:String x:Key="Str.KeyBindings.ChatHint">Per un messaggio di chat personalizzato scrivi il comando come "say Il tuo messaggio" (con tutti scrivi) o "say_team Il tuo messaggio" (solo con la squadra) e scegli "Chat" come tipo.</system:String>
+
+    <!-- ===================== Personaggio ===================== -->
+    <system:String x:Key="Str.PlayerProfile.Title">PERSONAGGIO</system:String>
+    <system:String x:Key="Str.PlayerProfile.Intro">Nome, mirino e colori applicati automaticamente ad ogni avvio (Locale, Multiplayer e Unisciti a un server).</system:String>
+    <system:String x:Key="Str.PlayerProfile.NameHeader">NOME (GAMERTAG)</system:String>
+    <system:String x:Key="Str.PlayerProfile.NameInfo">Posiziona il cursore dove vuoi e clicca un colore della palette per colorare da li' in poi (puoi mischiarne quanti vuoi nello stesso nome, come in Quake III).</system:String>
+    <system:String x:Key="Str.PlayerProfile.PaletteHeader">Palette colori (clic per inserire alla posizione del cursore):</system:String>
+    <system:String x:Key="Str.PlayerProfile.ResetName">Ripristina nome predefinito</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairHeader">MIRINO</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairStyle">Forma (1-15)</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairColor">Colore (#RRGGBB, richiede ioquake3)</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairSizeFormat">Dimensione: {0}</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairHealthColor">Cambia colore in base alla salute</system:String>
+    <system:String x:Key="Str.PlayerProfile.CrosshairPulse">Pulsa quando colpisci un avversario</system:String>
+    <system:String x:Key="Str.PlayerProfile.ModelColorsHeader">COLORI MODELLO</system:String>
+    <system:String x:Key="Str.PlayerProfile.PrimaryColor">Colore primario</system:String>
+    <system:String x:Key="Str.PlayerProfile.SecondaryColor">Colore secondario</system:String>
+</ResourceDictionary>

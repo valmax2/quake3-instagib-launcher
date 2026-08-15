@@ -1,0 +1,85 @@
+<UserControl x:Class="Quake3InstaGibLauncher.Views.DiagnosticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Quake3InstaGibLauncher.Core.Models;assembly=Quake3InstaGibLauncher.Core"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40,28" MaxWidth="900">
+            <TextBlock Text="{DynamicResource Str.Diagnostics.Title}" Style="{StaticResource Text.Title}" FontSize="30" Margin="0,0,0,4"/>
+            <TextBlock Style="{StaticResource Text.Muted}" Margin="0,0,0,20">
+                <Run Text="{DynamicResource Str.Diagnostics.VersionLabel}"/>
+                <Run Text=" "/>
+                <Run Text="{Binding AppVersion, Mode=OneWay}" FontFamily="{StaticResource Font.Mono}"/>
+            </TextBlock>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.InstallChecks}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding Checks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:DiagnosticCheck}">
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="220"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Width="10" Height="10" VerticalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="{StaticResource Brush.Danger}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Success}" Value="True">
+                                                        <Setter Property="Fill" Value="{StaticResource Brush.Success}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{StaticResource Text.Body}" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Detail}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16" Visibility="{Binding ScanErrors.Count, Converter={StaticResource BoolToVis}}">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.ScanWarnings}" Style="{StaticResource Text.Section}" Foreground="{StaticResource Brush.Warning}" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding ScanErrors}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,2"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.LastCommand}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBox Text="{Binding LastGeneratedCommand, Mode=OneWay}" Style="{StaticResource Input.TextBox}" IsReadOnly="True"
+                             TextWrapping="Wrap" FontFamily="{StaticResource Font.Mono}" FontSize="11" Margin="0,0,0,10"/>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.LastCfg}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBox Text="{Binding LastCfgPath, Mode=OneWay}" Style="{StaticResource Input.TextBox}" IsReadOnly="True"
+                             TextWrapping="Wrap" FontFamily="{StaticResource Font.Mono}" FontSize="11"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.AppDataFolder}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding AppDataFolder}" Style="{StaticResource Text.Muted}" FontFamily="{StaticResource Font.Mono}" TextWrapping="Wrap"/>
+                    <TextBlock Text="{DynamicResource Str.Diagnostics.PrivacyNote}"
+                               Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

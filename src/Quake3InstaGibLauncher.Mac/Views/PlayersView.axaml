@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Quake3InstaGibLauncher.Mac.ViewModels"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.PlayersView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="820">
+            <TextBlock Text="{DynamicResource Str.Players.Title}" Classes="title" FontSize="26" Margin="0,0,0,6"/>
+            <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,20" Text="{DynamicResource Str.Players.Intro}"/>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Players.AddHeader}" Classes="section" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,180,Auto">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.Players.NameLabel}" Classes="muted"/>
+                            <TextBox Text="{Binding NewPlayerName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.Players.RatingLabel}" Classes="muted"/>
+                            <ComboBox ItemsSource="{Binding AvailableRatings}" SelectedItem="{Binding NewPlayerRating}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                        <Button Grid.Column="2" Content="{DynamicResource Str.Players.Add}" Classes="primary" VerticalAlignment="Bottom"
+                                Command="{Binding AddPlayerCommand}"/>
+                    </Grid>
+                    <TextBlock Text="{Binding StatusMessage}" Classes="muted" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Classes="section" FontSize="14" Margin="0,4,0,10">
+                <Run Text="{DynamicResource Str.Nav.Players}"/>
+                <Run Text=" ("/>
+                <Run Text="{Binding Players.Count}"/>
+                <Run Text=")"/>
+            </TextBlock>
+
+            <TextBlock Classes="muted" FontStyle="Italic" Margin="0,0,0,10" Text="{DynamicResource Str.Players.EmptyHint}"
+                       IsVisible="{Binding HasNoPlayers}"/>
+
+            <ItemsControl ItemsSource="{Binding Players}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:KnownPlayerViewModel">
+                        <Border Classes="card" Margin="0,0,0,10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <Border CornerRadius="3" Padding="8,3" VerticalAlignment="Center" Background="{StaticResource PanelBorderBrush}">
+                                            <TextBlock Text="{Binding Rating}" FontSize="11" FontWeight="Bold"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Classes="muted" Margin="0,4,0,8" FontSize="11" Text="{Binding SightingSummary}"/>
+                                    <TextBlock Text="{DynamicResource Str.Players.NotesLabel}" Classes="muted" FontSize="11" Margin="0,0,0,3"/>
+                                    <TextBox Text="{Binding Notes, UpdateSourceTrigger=LostFocus}" TextWrapping="Wrap" AcceptsReturn="True" MaxHeight="70"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Top" Spacing="8">
+                                    <ComboBox ItemsSource="{Binding $parent[UserControl].DataContext.AvailableRatings}"
+                                              SelectedItem="{Binding Rating}" MinWidth="120"/>
+                                    <Button Content="{DynamicResource Str.Players.Remove}"
+                                            Command="{Binding $parent[UserControl].DataContext.RemovePlayerCommand}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

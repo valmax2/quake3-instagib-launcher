@@ -1,0 +1,92 @@
+<UserControl x:Class="Quake3InstaGibLauncher.Views.LocalSetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:Quake3InstaGibLauncher.Views"
+             xmlns:models="clr-namespace:Quake3InstaGibLauncher.Core.Models;assembly=Quake3InstaGibLauncher.Core"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="360"/>
+        </Grid.ColumnDefinitions>
+
+        <views:MapGalleryView Grid.Column="0" DataContext="{Binding Gallery}"/>
+
+        <!-- ===================== Pannello impostazioni partita locale ===================== -->
+        <Border Grid.Column="1" Background="{StaticResource Brush.Bg1}" BorderBrush="{StaticResource Brush.PanelBorder}" BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="18">
+                    <TextBlock Text="{DynamicResource Str.Local.Title}" Style="{StaticResource Text.Section}" FontSize="15" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding Gallery.SelectedMap.LongName, FallbackValue='Nessuna mappa selezionata'}" Style="{StaticResource Text.Body}" FontWeight="Bold" Margin="0,0,0,2" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Gallery.SelectedMap.TechnicalName}" FontFamily="{StaticResource Font.Mono}" FontSize="11" Foreground="{StaticResource Brush.TextDim}" Margin="0,0,0,16"/>
+
+                    <TextBlock Text="{DynamicResource Str.Common.ModeLabel}" Style="{StaticResource Text.Section}" Margin="0,0,0,6"/>
+                    <StackPanel Margin="0,0,0,4">
+                        <RadioButton Content="{DynamicResource Str.Common.GameModeFfa}" GroupName="gt" Margin="0,2" Foreground="{StaticResource Brush.TextPrimary}"
+                                     IsChecked="{Binding SelectedGameType, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static models:GameType.FreeForAll}}"/>
+                        <RadioButton Content="{DynamicResource Str.Common.GameModeTeam}" GroupName="gt" Margin="0,2" Foreground="{StaticResource Brush.TextPrimary}"
+                                     IsChecked="{Binding SelectedGameType, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static models:GameType.TeamDeathmatch}}"/>
+                        <RadioButton Content="{DynamicResource Str.Common.GameModeTournament}" GroupName="gt" Margin="0,2" Foreground="{StaticResource Brush.TextPrimary}"
+                                     IsChecked="{Binding SelectedGameType, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static models:GameType.Tournament}}"/>
+                        <RadioButton Content="{DynamicResource Str.Common.GameModeCtf}" GroupName="gt" Margin="0,2" Foreground="{StaticResource Brush.TextPrimary}"
+                                     IsChecked="{Binding SelectedGameType, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static models:GameType.CaptureTheFlag}}"/>
+                    </StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Local.IncompatibleWarning}" Style="{StaticResource Text.Muted}"
+                               Foreground="{StaticResource Brush.Warning}" TextWrapping="Wrap" Margin="0,0,0,16"
+                               Visibility="{Binding CurrentMapCompatibleWithMode, Converter={StaticResource BoolToVis}, ConverterParameter=Invert}"/>
+
+                    <TextBlock Text="{DynamicResource Str.Local.PlayersAndBots}" Style="{StaticResource Text.Section}" Margin="0,0,0,6"/>
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Str.Local.TotalPlayers}" Style="{StaticResource Text.Body}" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding TotalPlayers}" Style="{StaticResource Text.Body}" FontWeight="Bold"/>
+                    </Grid>
+                    <Slider Minimum="2" Maximum="16" Value="{Binding TotalPlayers}" Style="{StaticResource Input.Slider}" TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding BotCount, StringFormat={StaticResource Str.Local.BotCountFormat}}" Style="{StaticResource Text.Muted}" Margin="0,0,0,14"/>
+
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Str.Local.BotDifficulty}" Style="{StaticResource Text.Body}" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding BotSkill, StringFormat='{}{0}/5'}" Style="{StaticResource Text.Body}" FontWeight="Bold"/>
+                    </Grid>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding BotSkill}" Style="{StaticResource Input.Slider}" TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,0,0,16"/>
+
+                    <TextBlock Text="{DynamicResource Str.Local.Rules}" Style="{StaticResource Text.Section}" Margin="0,0,0,6"/>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                            <TextBlock Text="{DynamicResource Str.Common.FragLimit}" Style="{StaticResource Text.Muted}"/>
+                            <TextBox Text="{Binding FragLimit, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <TextBlock Text="{DynamicResource Str.Common.TimeLimitMin}" Style="{StaticResource Text.Muted}"/>
+                            <TextBox Text="{Binding TimeLimit, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="{Binding Fov, StringFormat={StaticResource Str.Common.FovFormat}}" Style="{StaticResource Text.Muted}" Margin="0,0,0,2"/>
+                    <Slider Minimum="90" Maximum="160" Value="{Binding Fov}" Style="{StaticResource Input.Slider}" TickFrequency="5" Margin="0,0,0,16"/>
+
+                    <CheckBox Content="{DynamicResource Str.Common.UseInstaGib}" Style="{StaticResource Input.CheckBox}" IsChecked="{Binding UseInstaGibMod}" Margin="0,0,0,6"/>
+                    <CheckBox Content="{DynamicResource Str.Common.SvPureOff}" Style="{StaticResource Input.CheckBox}" IsChecked="{Binding SvPureOff}" Margin="0,0,0,20"/>
+
+                    <Button Content="{DynamicResource Str.Local.StartButton}" Style="{StaticResource Btn.Primary}" Height="52" FontSize="15"
+                            Command="{Binding StartCommand}"/>
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Quake3InstaGibLauncher.Mac.ViewModels"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.MapGalleryView">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="MapCardTemplate" DataType="vm:MapCardViewModel">
+            <Border Width="210" Height="220" Margin="8" CornerRadius="6" BorderThickness="2" Cursor="Hand"
+                    Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource PanelBorderBrush}">
+                <Border.Styles>
+                    <Style Selector="Border:pointerover">
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentBrightBrush}"/>
+                    </Style>
+                </Border.Styles>
+                <Grid RowDefinitions="120,*">
+                    <Grid>
+                        <Image Source="{Binding PreviewPath}" Stretch="UniformToFill" IsVisible="{Binding HasPreview}"/>
+                        <Rectangle Fill="{StaticResource Bg2Brush}" IsVisible="{Binding !HasPreview}"/>
+                        <TextBlock Text="⛨" FontSize="30" Foreground="{StaticResource SteelBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !HasPreview}"/>
+
+                        <Border Background="#B3000000" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6">
+                            <TextBlock Text="{Binding SourceLabel}" FontSize="9" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Border>
+
+                        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Background="Transparent" BorderThickness="0"
+                                Command="{Binding $parent[UserControl].DataContext.ToggleFavoriteCommand}" CommandParameter="{Binding}">
+                            <TextBlock Text="★" FontSize="15" Foreground="{StaticResource WarningBrush}" IsVisible="{Binding IsFavorite}"/>
+                        </Button>
+
+                        <Border Background="{StaticResource AccentGradientBrush}" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="6"
+                                IsVisible="{Binding IsRecent}">
+                            <TextBlock Text="ULTIMA USATA" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                        </Border>
+                    </Grid>
+
+                    <StackPanel Grid.Row="1" Margin="10,6">
+                        <TextBlock Text="{Binding LongName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding TechnicalName}" FontFamily="Consolas,Menlo,monospace" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                        <TextBlock Text="{Binding GameTypesText}" Classes="muted" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                        <Button Content="+ rotazione" Margin="0,6,0,0" Padding="6,2" FontSize="10"
+                                Command="{Binding $parent[UserControl].DataContext.AddToRotationCommand}" CommandParameter="{Binding}"/>
+                        <Button Content="Seleziona" Margin="0,4,0,0" Padding="6,2" FontSize="10" Classes="primary"
+                                Command="{Binding $parent[UserControl].DataContext.SelectMapCommand}" CommandParameter="{Binding}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid ColumnDefinitions="*,260">
+        <Grid Grid.Column="0" Margin="20,16" RowDefinitions="Auto,Auto,*">
+            <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Cerca mappa per nome..." Margin="0,0,0,10" Height="34"/>
+
+            <WrapPanel Grid.Row="1" Margin="0,0,0,10">
+                <CheckBox Content="FFA" IsChecked="{Binding FilterFfa}" Margin="0,0,14,0"/>
+                <CheckBox Content="Team" IsChecked="{Binding FilterTeam}" Margin="0,0,14,0"/>
+                <CheckBox Content="Tournament" IsChecked="{Binding FilterTournament}" Margin="0,0,14,0"/>
+                <CheckBox Content="CTF" IsChecked="{Binding FilterCtf}" Margin="0,0,24,0"/>
+                <CheckBox Content="baseq3" IsChecked="{Binding FilterBaseQ3}" Margin="0,0,14,0"/>
+                <CheckBox Content="missionpack" IsChecked="{Binding FilterMissionPack}" Margin="0,0,14,0"/>
+                <CheckBox Content="personalizzate" IsChecked="{Binding FilterCustom}" Margin="0,0,24,0"/>
+                <CheckBox Content="★ solo preferite" IsChecked="{Binding FavoritesOnly}"/>
+            </WrapPanel>
+
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding FilteredMaps}" ItemTemplate="{StaticResource MapCardTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <Border Grid.Column="1" Background="{StaticResource Bg1Brush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1,0,0,0">
+            <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Row="0" Text="ROTAZIONE MAPPE" Classes="section" Margin="0,0,0,10"/>
+
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding RotationMaps}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:MapCardViewModel">
+                                <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1"
+                                        CornerRadius="4" Padding="8,6" Margin="0,0,0,6">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{Binding LongName}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Button Content="▲" Padding="3" FontSize="9"
+                                                    Command="{Binding $parent[UserControl].DataContext.MoveRotationUpCommand}" CommandParameter="{Binding}"/>
+                                            <Button Content="▼" Padding="3" FontSize="9"
+                                                    Command="{Binding $parent[UserControl].DataContext.MoveRotationDownCommand}" CommandParameter="{Binding}"/>
+                                            <Button Content="✕" Padding="3" FontSize="9"
+                                                    Command="{Binding $parent[UserControl].DataContext.RemoveFromRotationCommand}" CommandParameter="{Binding}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <Button Grid.Row="2" Content="Svuota rotazione" Margin="0,8,0,0" Command="{Binding ClearRotationCommand}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

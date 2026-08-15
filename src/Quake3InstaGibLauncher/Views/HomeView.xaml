@@ -1,0 +1,228 @@
+<UserControl x:Class="Quake3InstaGibLauncher.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800">
+
+    <UserControl.Resources>
+        <!-- Texture metallica arrugginita, tutta procedurale (nessuna immagine esterna):
+             base in metallo scuro + chiazze di ruggine (gradiali radiali) + rivetti (DrawingBrush
+             piastrellato) + vignettatura. -->
+        <DrawingBrush x:Key="RivetPatternBrush" TileMode="Tile" Viewport="0,0,64,64" ViewportUnits="Absolute" Opacity="0.5">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#3A3F47">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry Center="6,6" RadiusX="1.6" RadiusY="1.6"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="#3A3F47">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry Center="38,26" RadiusX="1.6" RadiusY="1.6"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="#2A2E33">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,31 64,1"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
+
+    <Grid ClipToBounds="True">
+        <!-- ===================== Sfondo: metallo + ruggine + vignettatura ===================== -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0C0D10" Offset="0"/>
+                    <GradientStop Color="#181410" Offset="0.45"/>
+                    <GradientStop Color="#0A0B0D" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Sfondo Home personalizzato (facoltativo, da Personalizza interfaccia): quando impostato
+             copre il gradiente base, mentre le texture decorative sotto (rivetti, ruggine,
+             pannelli diagonali, vignettatura) continuano a renderizzarsi sopra per restare in tema.
+             Nullo/trasparente finche' l'utente non ne sceglie uno: si vede solo il gradiente. -->
+        <Rectangle Fill="{DynamicResource Brush.HomeBackgroundImage}"/>
+
+        <Rectangle Fill="{StaticResource RivetPatternBrush}" Opacity="0.5"/>
+
+        <Canvas>
+            <!-- chiazze di ruggine: gradienti radiali color ossido, opacita' bassa -->
+            <Ellipse Canvas.Left="-120" Canvas.Top="-80" Width="620" Height="620" Opacity="0.16">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#8B4A20" Offset="0"/>
+                        <GradientStop Color="#8B4A20" Offset="0.25"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Canvas.Right="-160" Canvas.Bottom="-140" Width="700" Height="700" Opacity="0.14">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#6B2E12" Offset="0"/>
+                        <GradientStop Color="#6B2E12" Offset="0.2"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Canvas.Left="700" Canvas.Top="-100" Width="420" Height="420" Opacity="0.10">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#4A3A20" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Canvas>
+
+        <!-- pannelli metallici diagonali -->
+        <Canvas ClipToBounds="True" Opacity="0.12">
+            <Rectangle Canvas.Left="-200" Canvas.Top="120" Width="2400" Height="6">
+                <Rectangle.Fill><SolidColorBrush Color="{StaticResource Color.Accent}"/></Rectangle.Fill>
+                <Rectangle.RenderTransform><RotateTransform Angle="-8"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Canvas.Left="-200" Canvas.Top="260" Width="2400" Height="2">
+                <Rectangle.Fill><SolidColorBrush Color="{StaticResource Color.Energy}"/></Rectangle.Fill>
+                <Rectangle.RenderTransform><RotateTransform Angle="-8"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Canvas.Left="-200" Canvas.Top="640" Width="2400" Height="3">
+                <Rectangle.Fill><SolidColorBrush Color="{StaticResource Color.SteelLight}"/></Rectangle.Fill>
+                <Rectangle.RenderTransform><RotateTransform Angle="6"/></Rectangle.RenderTransform>
+            </Rectangle>
+        </Canvas>
+
+        <!-- vignettatura -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <RadialGradientBrush GradientOrigin="0.5,0.45" Center="0.5,0.45" RadiusX="0.75" RadiusY="0.85">
+                    <GradientStop Color="#00000000" Offset="0.45"/>
+                    <GradientStop Color="#B3000000" Offset="1"/>
+                </RadialGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- ===================== Contenuto ===================== -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <!-- Emblema rotante: reticolo/rune originale, nessun logo protetto.
+                     Posizione, dimensione, asse e velocita' di rotazione sono personalizzabili
+                     dalla schermata "Personalizza interfaccia" (vedi HomeView.xaml.cs). -->
+                <Grid x:Name="EmblemContainer" Width="360" Height="360" Margin="0,-40,0,-60" HorizontalAlignment="Center">
+                  <!-- Logo personalizzato (immagine statica trasparente o GIF animato importato
+                       in Personalizza interfaccia): sostituisce l'emblema vettoriale quando impostato.
+                       Il ciclo dei fotogrammi GIF e' gestito da HomeView.xaml.cs (WPF non anima i GIF
+                       automaticamente quando assegnati a Image.Source). -->
+                  <Image x:Name="CustomLogoImage" Stretch="Uniform" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+                      <Image.RenderTransform>
+                          <TransformGroup>
+                              <ScaleTransform x:Name="CustomLogoFlip" ScaleX="1" ScaleY="1"/>
+                              <RotateTransform x:Name="CustomLogoSpin" Angle="0"/>
+                          </TransformGroup>
+                      </Image.RenderTransform>
+                  </Image>
+
+                  <Viewbox x:Name="VectorEmblemViewbox" Stretch="Uniform">
+                    <Canvas Width="400" Height="400" RenderTransformOrigin="0.5,0.5">
+                        <!-- .NET (Core) WPF non porta piu' UIElement.Projection (pseudo-3D "PlaneProjection"
+                             di .NET Framework), quindi la rotazione "verticale/orizzontale" e' simulata con
+                             un vero e proprio effetto di ribaltamento 2D (ScaleTransform da 1 a -1), un
+                             trucco classico e affidabile per ottenere un effetto "flip" senza Viewport3D. -->
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="EmblemFlip" ScaleX="1" ScaleY="1"/>
+                                <RotateTransform x:Name="EmblemSpin" Angle="0"/>
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+
+                        <Ellipse Canvas.Left="30" Canvas.Top="30" Width="340" Height="340" Stroke="{StaticResource Brush.AccentBright}"
+                                  StrokeThickness="1.4" StrokeDashArray="1,4" Opacity="0.55"/>
+                        <Ellipse Canvas.Left="60" Canvas.Top="60" Width="280" Height="280" Stroke="{StaticResource Brush.Energy}"
+                                  StrokeThickness="1" Opacity="0.4"/>
+                        <Rectangle Canvas.Left="100" Canvas.Top="100" Width="200" Height="200" Stroke="{StaticResource Brush.Steel}"
+                                   StrokeThickness="1.2" Opacity="0.5" RenderTransformOrigin="0.5,0.5">
+                            <Rectangle.RenderTransform><RotateTransform Angle="45"/></Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!-- 8 tacche radiali stile mirino/HUD -->
+                        <Line X1="370" Y1="200" X2="385" Y2="200" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="320.2" Y1="320.2" X2="330.8" Y2="330.8" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="200" Y1="370" X2="200" Y2="385" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="79.8" Y1="320.2" X2="69.2" Y2="330.8" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="30" Y1="200" X2="15" Y2="200" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="79.8" Y1="79.8" X2="69.2" Y2="69.2" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="200" Y1="30" X2="200" Y2="15" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                        <Line X1="320.2" Y1="79.8" X2="330.8" Y2="69.2" Stroke="{StaticResource Brush.AccentBright}" StrokeThickness="2"/>
+                    </Canvas>
+                  </Viewbox>
+                </Grid>
+
+                <TextBlock Text="QUAKE III" HorizontalAlignment="Center" FontFamily="{StaticResource Font.Display}" FontSize="72">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#FFFFFF" Offset="0"/>
+                            <GradientStop Color="#D8D4CC" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="{StaticResource Color.Accent}" BlurRadius="28" ShadowDepth="0" Opacity="0.85"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                <TextBlock Text="{DynamicResource Str.Home.Subtitle}" FontFamily="{StaticResource Font.Body}" FontWeight="Bold" FontSize="18"
+                           Foreground="{StaticResource Brush.AccentBright}" HorizontalAlignment="Center" Margin="0,6,0,40">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="{StaticResource Color.Energy}" BlurRadius="12" ShadowDepth="0" Opacity="0.7"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource Btn.Hero}" Width="320" Height="120" Margin="0,0,20,0"
+                            Command="{Binding GoLocalSetupCommand}">
+                        <TextBlock Text="{DynamicResource Str.Home.LocalButton}" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Button>
+                    <Button Style="{StaticResource Btn.Hero}" Width="320" Height="120"
+                            Command="{Binding GoMultiplayerSetupCommand}">
+                        <TextBlock Text="{DynamicResource Str.Home.MultiplayerButton}" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
+                    <Button Content="{DynamicResource Str.Home.HelpButton}" Style="{StaticResource Btn.Base}" Margin="0,0,10,0" Command="{Binding GoHelpCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Settings}" Style="{StaticResource Btn.Base}" Margin="0,0,10,0" Command="{Binding GoSettingsCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Diagnostics}" Style="{StaticResource Btn.Base}" Command="{Binding GoDiagnosticsCommand}"/>
+                </StackPanel>
+
+                <Border Style="{StaticResource Panel.Card}" Margin="0,32,0,0" Padding="20,12" MaxWidth="520">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Ellipse Width="12" Height="12" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="{StaticResource Brush.Danger}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Home.InstallationOk}" Value="True">
+                                            <Setter Property="Fill" Value="{StaticResource Brush.Success}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Home.InstallationSummary}" Style="{StaticResource Text.Body}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

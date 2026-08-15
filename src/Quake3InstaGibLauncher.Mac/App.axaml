@@ -1,0 +1,149 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:Quake3InstaGibLauncher.Mac.Converters"
+             x:Class="Quake3InstaGibLauncher.Mac.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Resources>
+        <conv:EnumEqualsConverter x:Key="EnumEquals"/>
+        <conv:InverseBooleanConverter x:Key="InverseBool"/>
+        <conv:StringNotEmptyConverter x:Key="NotEmpty"/>
+        <conv:PathToBitmapConverter x:Key="PathToBitmap"/>
+
+        <SolidColorBrush x:Key="Bg0Brush" Color="#0A0B0D"/>
+        <SolidColorBrush x:Key="Bg1Brush" Color="#111317"/>
+        <SolidColorBrush x:Key="Bg2Brush" Color="#181B20"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#1C2025"/>
+        <SolidColorBrush x:Key="PanelBorderBrush" Color="#2C3138"/>
+        <SolidColorBrush x:Key="SteelBrush" Color="#4A4F58"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F3F1EC"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9AA0A8"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#5E636B"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#FF5A1F"/>
+        <SolidColorBrush x:Key="AccentBrightBrush" Color="#FF8A3D"/>
+        <SolidColorBrush x:Key="EnergyBrush" Color="#E0202B"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#3DDC84"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#FF4B4B"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFC24B"/>
+        <SolidColorBrush x:Key="ButtonPrimaryTextBrush" Color="White"/>
+
+        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#FF5A1F" Offset="0"/>
+            <GradientStop Color="#E0202B" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Placeholder sostituiti da ThemeService.Apply appena l'app parte (immagine se
+             importata, altrimenti equivalenti dei brush sopra): dichiarati qui cosi'
+             {DynamicResource} trova sempre una chiave valida anche prima del primo Apply. -->
+        <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#1C2025"/>
+        <LinearGradientBrush x:Key="PrimaryButtonBackgroundBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#FF5A1F" Offset="0"/>
+            <GradientStop Color="#E0202B" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="WindowBackgroundImageBrush" Color="Transparent"/>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{StaticResource Bg0Brush}"/>
+            <Setter Property="FontFamily" Value="Segoe UI,San Francisco,Helvetica,Arial"/>
+        </Style>
+
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="34"/>
+            <Setter Property="FontWeight" Value="Black"/>
+        </Style>
+
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrightBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource PanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <!-- Il testo va a capo invece di essere tagliato dagli angoli arrotondati quando
+                 piu' lungo della larghezza disponibile. -->
+            <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrightBrush}"/>
+        </Style>
+
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ButtonPrimaryTextBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrightBrush}"/>
+        </Style>
+
+        <Style Selector="Button.hero">
+            <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource ButtonPrimaryTextBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="24,20"/>
+        </Style>
+
+        <!-- ===================== Stili pulsanti personalizzabili ===================== -->
+        <!-- Attivati da ThemeService tramite una classe CSS-like sulla Window radice
+             (Window.raised / Window.glow), che fa scattare queste regole discendenti:
+             pattern idiomatico di Avalonia per una "modalita' di tema" globale runtime.
+             Nota: Button non espone BoxShadow direttamente (e' una proprieta' di Border, non
+             disponibile su tutti i TemplatedControl in questa versione di Avalonia), quindi lo
+             stile "Rialzato"/"Bagliore" e' reso con bordo piu' spesso e piu' chiaro. -->
+        <Style Selector="Window.raised Button">
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SteelBrush}"/>
+        </Style>
+        <Style Selector="Window.glow Button:pointerover">
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrightBrush}"/>
+            <Setter Property="Background" Value="{StaticResource AccentGradientBrush}"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource AccentBrightBrush}"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}"/>
+        </Style>
+
+        <Style Selector="CheckBox, RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+    </Application.Styles>
+</Application>

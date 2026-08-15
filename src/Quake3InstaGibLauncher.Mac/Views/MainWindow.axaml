@@ -1,0 +1,166 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Quake3InstaGibLauncher.Mac.ViewModels"
+        xmlns:views="using:Quake3InstaGibLauncher.Mac.Views"
+        xmlns:core="using:Quake3InstaGibLauncher.Core.Models"
+        x:Class="Quake3InstaGibLauncher.Mac.Views.MainWindow"
+        Title="Quake III InstaGib Launcher"
+        Width="1440" Height="900" MinWidth="1100" MinHeight="700"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Sfondo generale personalizzabile (immagine se caricata da Personalizza interfaccia,
+             altrimenti trasparente: si vede il colore Bg0 della Window sotto). Copre tutte le
+             righe cosi' resta dietro sia la barra di navigazione sia il contenuto. -->
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="{DynamicResource WindowBackgroundImageBrush}" IsHitTestVisible="False"/>
+
+        <!-- ===================== Barra di navigazione ===================== -->
+        <Border Grid.Row="0" Background="{StaticResource Bg1Brush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,10" ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="10" Height="26" Background="{StaticResource AccentGradientBrush}" Margin="0,0,10,0"/>
+                    <TextBlock Text="QUAKE III" FontSize="19" FontWeight="Black" VerticalAlignment="Center"/>
+                    <TextBlock Text=" :: INSTAGIB LAUNCHER (macOS)" FontWeight="Bold" FontSize="13"
+                               Foreground="{StaticResource AccentBrightBrush}" VerticalAlignment="Center" Margin="6,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                    <Button Content="{DynamicResource Str.Nav.Home}" Command="{Binding GoHomeCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Local}" Command="{Binding GoLocalSetupCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Multiplayer}" Command="{Binding GoMultiplayerSetupCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Settings}" Command="{Binding GoSettingsCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Diagnostics}" Command="{Binding GoDiagnosticsCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Help}" Command="{Binding GoHelpCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Customize}" Command="{Binding GoCustomizeCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.Players}" Command="{Binding GoPlayersCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.KeyBindings}" Command="{Binding GoKeyBindingsCommand}"/>
+                    <Button Content="{DynamicResource Str.Nav.PlayerProfile}" Command="{Binding GoPlayerProfileCommand}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                    <!-- Donazione PayPal sempre visibile (non solo in Guida): stesso link di
+                         HelpVm.PayPalUrl, condiviso tra le due posizioni. -->
+                    <Button Padding="10,6" Cursor="Hand" Background="#0070BA"
+                            Command="{Binding HelpVm.OpenLinkCommand}" CommandParameter="{Binding HelpVm.PayPalUrl}"
+                            IsVisible="{Binding HelpVm.HasDonateLink}"
+                            ToolTip.Tip="Se il launcher ti è utile, puoi offrire un caffè allo sviluppatore.">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="18" Height="18" CornerRadius="9" Background="White">
+                                <TextBlock Text="P" FontWeight="Bold" FontSize="11" Foreground="#0070BA"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock VerticalAlignment="Center" FontSize="12" FontWeight="Bold" Foreground="White" Text="Dona"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Selettore lingua: bandierine vettoriali disegnate (niente emoji-bandiera:
+                         non sempre renderizzate come icone dal font di sistema). -->
+                    <StackPanel Orientation="Horizontal" Spacing="4" ToolTip.Tip="{DynamicResource Str.Language.Tooltip}">
+                        <Button Padding="4" Cursor="Hand" Command="{Binding SetLanguageCommand}" CommandParameter="{x:Static core:AppLanguage.Italian}">
+                            <Canvas Width="22" Height="15">
+                                <Rectangle Canvas.Left="0" Width="8" Height="15" Fill="#009246"/>
+                                <Rectangle Canvas.Left="7" Width="8" Height="15" Fill="White"/>
+                                <Rectangle Canvas.Left="14" Width="8" Height="15" Fill="#CE2B37"/>
+                            </Canvas>
+                        </Button>
+                        <Button Padding="4" Cursor="Hand" Command="{Binding SetLanguageCommand}" CommandParameter="{x:Static core:AppLanguage.English}">
+                            <Canvas Width="22" Height="15" ClipToBounds="True">
+                                <Rectangle Width="22" Height="15" Fill="#00247D"/>
+                                <Line StartPoint="0,0" EndPoint="22,15" Stroke="White" StrokeThickness="3"/>
+                                <Line StartPoint="22,0" EndPoint="0,15" Stroke="White" StrokeThickness="3"/>
+                                <Line StartPoint="0,0" EndPoint="22,15" Stroke="#CE1124" StrokeThickness="1.4"/>
+                                <Line StartPoint="22,0" EndPoint="0,15" Stroke="#CE1124" StrokeThickness="1.4"/>
+                                <Rectangle Canvas.Left="9" Width="4" Height="15" Fill="White"/>
+                                <Rectangle Canvas.Top="6" Width="22" Height="3" Fill="White"/>
+                                <Rectangle Canvas.Left="9.6" Width="2.8" Height="15" Fill="#CE1124"/>
+                                <Rectangle Canvas.Top="6.6" Width="22" Height="1.8" Fill="#CE1124"/>
+                            </Canvas>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Suoni: pulsante rapido on/off, sincronizzato con Personalizza interfaccia. -->
+                    <Button Padding="6" Cursor="Hand" Command="{Binding ToggleUiSoundsCommand}">
+                        <Button.Styles>
+                            <Style Selector="TextBlock.soundIcon"><Setter Property="FontSize" Value="15"/></Style>
+                        </Button.Styles>
+                        <TextBlock Classes="soundIcon" Text="🔊" IsVisible="{Binding UiSoundsEnabled}" ToolTip.Tip="Suoni attivi (clic per disattivare)"/>
+                    </Button>
+                    <Button Padding="6" Cursor="Hand" Command="{Binding ToggleUiSoundsCommand}" IsVisible="{Binding !UiSoundsEnabled}">
+                        <TextBlock FontSize="15" Text="🔇" ToolTip.Tip="Suoni disattivati (clic per attivare)"/>
+                    </Button>
+
+                    <Panel Width="10" Height="10" VerticalAlignment="Center">
+                        <Ellipse Fill="{StaticResource DangerBrush}"/>
+                        <Ellipse Fill="{StaticResource SuccessBrush}" IsVisible="{Binding Home.InstallationOk}"/>
+                    </Panel>
+                    <TextBlock Text="{Binding Home.InstallationSummary}" Classes="muted" VerticalAlignment="Center" MaxWidth="260" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===================== Banner messaggi ===================== -->
+        <Border Grid.Row="1" Padding="16,8" IsVisible="{Binding BannerMessage, Converter={StaticResource NotEmpty}}"
+                Background="#264B1A1A">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{Binding BannerMessage}" TextWrapping="Wrap"/>
+                <Button Grid.Column="1" Content="✕" Command="{Binding DismissBannerCommand}"/>
+            </Grid>
+        </Border>
+
+        <!-- ===================== Contenuto ===================== -->
+        <Grid Grid.Row="2">
+            <views:HomeView IsVisible="{Binding CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Home}"/>
+            <views:LocalSetupView DataContext="{Binding LocalSetup}"
+                                   IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=LocalSetup}"/>
+            <views:MultiplayerSetupView DataContext="{Binding MultiplayerSetup}"
+                                         IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=MultiplayerSetup}"/>
+            <views:SettingsView DataContext="{Binding SettingsVm}"
+                                 IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Settings}"/>
+            <views:DiagnosticsView DataContext="{Binding Diagnostics}"
+                                    IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Diagnostics}"/>
+            <views:HelpView DataContext="{Binding HelpVm}"
+                             IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Help}"/>
+            <views:CustomizeView DataContext="{Binding CustomizeVm}"
+                                  IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Customize}"/>
+            <views:PlayersView DataContext="{Binding PlayersVm}"
+                                IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=Players}"/>
+            <views:KeyBindingsView DataContext="{Binding KeyBindingsVm}"
+                                    IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=KeyBindings}"/>
+            <views:PlayerProfileView DataContext="{Binding PlayerProfileVm}"
+                                      IsVisible="{Binding $parent[Window].DataContext.CurrentScreen, Converter={StaticResource EnumEquals}, ConverterParameter=PlayerProfile}"/>
+
+            <!-- Overlay: occupato -->
+            <Border Background="#CC0A0B0D" IsVisible="{Binding IsBusy}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="SCANSIONE IN CORSO" Classes="section" FontSize="15" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding BusyMessage}" Classes="muted" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Overlay: conferma avvio -->
+            <Border Background="#DD0A0B0D" IsVisible="{Binding IsConfirmOpen}">
+                <Border Classes="card" MaxWidth="640" MaxHeight="600" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource AccentBrightBrush}">
+                    <StackPanel>
+                        <TextBlock Text="RIEPILOGO PARTITA" Classes="section" FontSize="15" Margin="0,0,0,12"/>
+                        <TextBlock Text="{Binding ConfirmSummary}" TextWrapping="Wrap"/>
+
+                        <Button Content="Mostra riga di comando avanzata ▾" Margin="0,14,0,0" Command="{Binding ToggleConfirmAdvancedCommand}"
+                                Foreground="{StaticResource AccentBrightBrush}" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left"/>
+
+                        <StackPanel IsVisible="{Binding ConfirmShowAdvanced}" Margin="0,8,0,0">
+                            <TextBox Text="{Binding ConfirmAdvancedCommand, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True"
+                                     FontFamily="Consolas,Menlo,monospace" FontSize="11" MaxHeight="140"/>
+                            <Button Content="Copia comando" HorizontalAlignment="Left" Margin="0,8,0,0" Command="{Binding CopyAdvancedCommandCommand}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0" Spacing="10">
+                            <Button Content="Annulla" Command="{Binding ConfirmNoCommand}"/>
+                            <Button Content="AVVIA" Classes="primary" Command="{Binding ConfirmYesCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

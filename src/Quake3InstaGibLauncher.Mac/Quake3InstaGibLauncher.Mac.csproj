@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>Quake3InstaGibLauncher.Mac</RootNamespace>
+    <AssemblyName>Quake3InstaGibLauncher.Mac</AssemblyName>
+
+    <!-- Metadati -->
+    <Version>1.5.0</Version>
+    <Product>Quake III InstaGib Launcher (macOS)</Product>
+    <Description>Launcher grafico per ioquake3 e la mod InstaGib129 - versione macOS</Description>
+
+    <!-- Pubblicazione self-contained per Apple Silicon e Intel.
+         NOTA: la compilazione/pubblicazione per questi RID funziona anche da Windows (NuGet
+         scarica i runtime pack necessari), ma l'ESECUZIONE reale richiede un Mac: questo
+         progetto non e' stato testato su hardware macOS reale in questa sessione di sviluppo. -->
+    <RuntimeIdentifiers>osx-arm64;osx-x64</RuntimeIdentifiers>
+    <SelfContained>true</SelfContained>
+
+    <!-- Richiesto da MacImageConversionService per copiare pixel TGA decodificati con Pfim
+         dentro un SKBitmap tramite puntatore, come da esempio ufficiale Pfim+SkiaSharp. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <!-- Sfondi/pulsanti predefiniti inclusi nell'app (arte originale, stessa cartella usata dalla
+       versione Windows: nessun asset reale di Quake III). Copiati accanto all'eseguibile
+       pubblicato cosi' la galleria "Predefiniti" in Personalizza interfaccia li trova sempre.
+
+       ExcludeFromSingleFile=true: qui non ha effetto pratico oggi (questo progetto non pubblica
+       ancora con PublishSingleFile=true), ma protegge in anticipo dallo stesso bug scoperto sul
+       progetto Windows — con PublishSingleFile attivo, .NET scarta in silenzio i file di contenuto
+       piu' grandi (empiricamente sopra circa 2 MB) dalla cartella pubblicata invece di copiarli,
+       senza alcun errore. Vedi il commento equivalente in Quake3InstaGibLauncher.csproj. -->
+  <ItemGroup>
+    <Content Include="Presets\**\*.*" ExcludeFromSingleFile="true">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Avalonia 11.3.x (LTS/stabile) invece della 12.1.1: quest'ultima richiede un generatore
+         Roslyn piu' recente (4.14) di quello incluso nell'SDK .NET 8 disponibile qui (4.11),
+         causando la mancata generazione del codice InitializeComponent da ogni .axaml. -->
+    <PackageReference Include="Avalonia" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.20" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+
+    <!-- SkiaSharp e' gia' una dipendenza transitiva di Avalonia (motore di rendering):
+         la referenziamo esplicitamente per decodificare JPG/PNG/TGA -> PNG per la cache anteprime. -->
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+
+    <!-- Pfim: stesso decoder TGA puro C# usato su Windows, per uniformita' di comportamento
+         (SkiaSharp da solo non decodifica TGA). -->
+    <PackageReference Include="Pfim" Version="0.11.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Quake3InstaGibLauncher.Core\Quake3InstaGibLauncher.Core.csproj" />
+  </ItemGroup>
+</Project>

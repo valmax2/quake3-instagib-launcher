@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.SettingsView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="720">
+            <TextBlock Text="IMPOSTAZIONI" Classes="title" FontSize="28" Margin="0,0,0,20"/>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="INSTALLAZIONE IOQUAKE3" Classes="section" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Eseguibile (dentro Contents/MacOS/ del bundle .app)" Classes="muted"/>
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,10">
+                        <TextBox Text="{Binding ExecutablePath}"/>
+                        <Button Grid.Column="1" Content="Sfoglia..." Margin="8,0,0,0" Command="{Binding BrowseExecutableCommand}"/>
+                    </Grid>
+
+                    <TextBlock Text="Cartella dati (contiene baseq3, InstaGib129, missionpack)" Classes="muted"/>
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,10">
+                        <TextBox Text="{Binding DataRootPath}"/>
+                        <Button Grid.Column="1" Content="Sfoglia..." Margin="8,0,0,0" Command="{Binding BrowseDataFolderCommand}"/>
+                    </Grid>
+
+                    <Button Content="Applica percorsi e verifica" Classes="primary" HorizontalAlignment="Left" Command="{Binding ApplyPathsCommand}"/>
+
+                    <WrapPanel Margin="0,16,0,0">
+                        <Button Content="Apri cartella dati" Margin="0,0,8,8" Command="{Binding OpenDataFolderCommand}"/>
+                        <Button Content="Apri cartella baseq3" Margin="0,0,8,8" Command="{Binding OpenBaseQ3FolderCommand}"/>
+                        <Button Content="Apri cartella mod InstaGib129" Margin="0,0,8,8" Command="{Binding OpenModFolderCommand}"/>
+                        <Button Content="Apri cartella missionpack" Margin="0,0,8,8" Command="{Binding OpenMissionPackFolderCommand}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="PREFERENZE DI GIOCO" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding Fov, StringFormat='Campo visivo predefinito (FOV): {0}'}"/>
+                    <Slider Minimum="90" Maximum="160" Value="{Binding Fov}" TickFrequency="5" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="RISOLUZIONE VIDEO" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="Evita le barre nere laterali forzando la risoluzione reale dello schermo invece di quella salvata in precedenza nel gioco. Richiede ioquake3 (r_mode -2)."/>
+                    <CheckBox Content="Correggi automaticamente aspect ratio/risoluzione" IsChecked="{Binding FixAspectRatio}" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*" IsEnabled="{Binding FixAspectRatio}">
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                            <TextBlock Text="Larghezza" Classes="muted"/>
+                            <TextBox Text="{Binding ScreenWidth}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <TextBlock Text="Altezza" Classes="muted"/>
+                            <TextBox Text="{Binding ScreenHeight}"/>
+                        </StackPanel>
+                    </Grid>
+                    <CheckBox Content="Schermo intero" IsChecked="{Binding Fullscreen}" Margin="0,10,0,10" IsEnabled="{Binding FixAspectRatio}"/>
+                    <Button Content="Rileva risoluzione" HorizontalAlignment="Left" Command="{Binding DetectScreenResolutionCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="CHAT VOCALE (STEAM)" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="Per parlare con un amico durante una partita usa la chat vocale di Steam: cerca l'amico dal client, oppure incolla qui il suo SteamID64 o il link al profilo per aprire la chat direttamente."/>
+                    <TextBlock Text="SteamID64 o link profilo amico" Classes="muted"/>
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,10">
+                        <TextBox Text="{Binding SteamFriendInput}"/>
+                        <Button Grid.Column="1" Content="💬 Avvia chat" Classes="primary" Margin="8,0,0,0" Command="{Binding StartSteamChatCommand}"/>
+                    </Grid>
+                    <Button Content="🔍 Cerca amico su Steam" HorizontalAlignment="Left" Command="{Binding SearchSteamFriendCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="CACHE MAPPE E ANTEPRIME" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="Le anteprime vengono convertite una sola volta e salvate in ~/Library/Application Support/Quake3InstaGibLauncher/cache. I file .pk3 originali non vengono mai modificati."/>
+                    <WrapPanel>
+                        <Button Content="🔄 Aggiorna mappe" Classes="primary" Margin="0,0,8,0" Command="{Binding RefreshMapsCommand}" IsEnabled="{Binding !IsRefreshing}"/>
+                        <Button Content="🗑 Cancella cache anteprime" Command="{Binding ClearCacheCommand}" IsEnabled="{Binding !IsRefreshing}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="RIPRISTINO" Classes="section" Margin="0,0,0,10"/>
+                    <Button Content="Ripristina impostazioni predefinite" HorizontalAlignment="Left" Command="{Binding ResetDefaultsCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding StatusMessage}" Classes="muted" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

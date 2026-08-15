@@ -1,0 +1,152 @@
+<UserControl x:Class="Quake3InstaGibLauncher.Views.HelpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Quake3InstaGibLauncher.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40,28" MaxWidth="900">
+            <TextBlock Text="{DynamicResource Str.Help.Title}" Style="{StaticResource Text.Title}" FontSize="30" Margin="0,0,0,6"/>
+            <TextBlock Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,0,0,20"
+                       Text="{DynamicResource Str.Help.Intro}"/>
+
+            <!-- ===================== Sviluppatore / crediti / donazione =====================
+                 Volutamente la PRIMA card della schermata (non in fondo): deve essere vista subito,
+                 non scoperta solo scorrendo oltre tutto il resto. -->
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,20" BorderBrush="{StaticResource Brush.AccentBright}" BorderThickness="2">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Help.CreditsHeader}" Style="{StaticResource Text.Section}" FontSize="16" Margin="0,0,0,14"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
+                        <Image Source="{Binding DeveloperLogoPath, Converter={StaticResource ThemeImageToBitmap}}"
+                               Width="88" Height="88" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,18,0"
+                               Visibility="{Binding DeveloperLogoPath, Converter={StaticResource BoolToVis}}"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding StudioName}" Style="{StaticResource Text.Body}" FontWeight="Bold" FontSize="24"/>
+                            <TextBlock Text="{Binding StudioTagline}" Style="{StaticResource Text.Muted}" FontStyle="Italic" FontSize="14"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource Text.Body}" FontSize="14" VerticalAlignment="Center">
+                            <Run Text="{DynamicResource Str.Help.CreditsEmailLabel}"/>
+                            <Run Text=" "/>
+                            <Run Text="{Binding DeveloperEmail, Mode=OneWay}" FontFamily="{StaticResource Font.Mono}"/>
+                        </TextBlock>
+                        <Button Grid.Column="1" Content="{DynamicResource Str.Help.CreditsEmailButton}" Style="{StaticResource Btn.Base}"
+                                Padding="16,10" FontSize="14"
+                                Command="{Binding OpenLinkCommand}" CommandParameter="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=vstudioapps@gmail.com"/>
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,0,0,12" FontSize="13"
+                               Text="{DynamicResource Str.Help.CreditsDonateInfo}"/>
+
+                    <!-- Pulsante donazione con i colori ufficiali del brand PayPal (blu #0070BA, wordmark
+                         bicolore "Pay"/"Pal"): riconoscibile a colpo d'occhio come un vero pulsante PayPal,
+                         senza dipendere da un'immagine scaricata da internet a runtime. -->
+                    <Button HorizontalAlignment="Left" Padding="22,14" Cursor="Hand"
+                            Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PayPalUrl}"
+                            Visibility="{Binding HasDonateLink, Converter={StaticResource BoolToVis}}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource Btn.Base}">
+                                <Setter Property="Background" Value="#0070BA"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#005EA6"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="26" Height="26" CornerRadius="13" Background="White" Margin="0,0,10,0">
+                                <TextBlock Text="P" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="16"
+                                           Foreground="#0070BA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Bold">
+                                <Run Text="{DynamicResource Str.Help.CreditsDonatePrefix}" Foreground="White"/>
+                                <Run Text="Pay" Foreground="#FFFFFF"/><Run Text="Pal" Foreground="#009CDE"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Help.DownloadsHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding DownloadLinks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:HelpLinkItem}">
+                                <Border Background="{StaticResource Brush.Bg1}" BorderBrush="{StaticResource Brush.PanelBorder}"
+                                        BorderThickness="1" CornerRadius="4" Padding="14,10" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                            <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Body}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Description}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                            <TextBlock Text="{Binding Url}" FontFamily="{StaticResource Font.Mono}" FontSize="10"
+                                                       Foreground="{StaticResource Brush.TextDim}" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="1" Content="{DynamicResource Str.Help.OpenLink}" Style="{StaticResource Btn.Base}" VerticalAlignment="Center"
+                                                Command="{Binding DataContext.OpenLinkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding Url}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Help.QuickInstallHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding InstallSteps}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:HelpStepItem}">
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="26" Height="26" CornerRadius="13" Background="{StaticResource Brush.AccentGradient}" VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding Number}" Foreground="White" FontWeight="Bold" FontSize="12"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Body}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Description}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Help.SupportHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Style="{StaticResource Text.Body}" TextWrapping="Wrap" Margin="0,0,0,8"
+                               Text="{DynamicResource Str.Help.Support1}"/>
+                    <TextBlock Style="{StaticResource Text.Body}" TextWrapping="Wrap" Margin="0,0,0,8"
+                               Text="{DynamicResource Str.Help.Support2}"/>
+                    <TextBlock Style="{StaticResource Text.Body}" TextWrapping="Wrap"
+                               Text="{DynamicResource Str.Help.Support3}"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Text.Muted}" Foreground="{StaticResource Brush.Danger}" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

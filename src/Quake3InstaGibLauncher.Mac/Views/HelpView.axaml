@@ -1,0 +1,115 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Quake3InstaGibLauncher.Mac.ViewModels"
+             x:Class="Quake3InstaGibLauncher.Mac.Views.HelpView">
+
+    <ScrollViewer>
+        <StackPanel Margin="40,28" MaxWidth="900">
+            <TextBlock Text="GUIDA E DOWNLOAD" Classes="title" FontSize="28" Margin="0,0,0,6"/>
+            <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,20"
+                       Text="Questo launcher non scarica o installa nulla automaticamente: qui trovi solo i link ufficiali dei componenti necessari e i passi per sistemarli nella struttura di cartelle che l'app si aspetta."/>
+
+            <!-- ===================== Sviluppatore / crediti / donazione =====================
+                 Prima card della schermata (non in fondo): deve essere vista subito. -->
+            <Border Classes="card" Margin="0,0,0,20" BorderBrush="{StaticResource AccentBrightBrush}" BorderThickness="2">
+                <StackPanel>
+                    <TextBlock Text="SVILUPPATORE" Classes="section" FontSize="16" Margin="0,0,0,14"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
+                        <Image Source="{Binding DeveloperLogoPath, Converter={StaticResource PathToBitmap}}"
+                               Width="88" Height="88" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,18,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding StudioName}" FontWeight="Bold" FontSize="24"/>
+                            <TextBlock Text="{Binding StudioTagline}" Classes="muted" FontStyle="Italic" FontSize="14"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                        <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center"
+                                   Text="{Binding DeveloperEmail, StringFormat='Richieste, segnalazioni o correzioni: {0}'}"/>
+                        <Button Grid.Column="1" Content="✉ Scrivi" Padding="16,10" FontSize="14"
+                                Command="{Binding OpenLinkCommand}" CommandParameter="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=vstudioapps@gmail.com"/>
+                    </Grid>
+
+                    <TextBlock Classes="muted" TextWrapping="Wrap" Margin="0,0,0,12" FontSize="13"
+                               Text="Se il launcher ti è utile, puoi offrire un caffè allo sviluppatore."/>
+
+                    <Button HorizontalAlignment="Left" Padding="22,14" Cursor="Hand" Background="#0070BA"
+                            Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PayPalUrl}"
+                            IsVisible="{Binding HasDonateLink}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="26" Height="26" CornerRadius="13" Background="White" Margin="0,0,10,0">
+                                <TextBlock Text="P" FontWeight="Bold" FontSize="16" Foreground="#0070BA"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Bold">
+                                <Run Text="Dona con " Foreground="White"/><Run Text="Pay" Foreground="White"/><Run Text="Pal" Foreground="#009CDE"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="DOVE SCARICARE I COMPONENTI" Classes="section" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding DownloadLinks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:HelpLinkItem">
+                                <Border Background="{StaticResource Bg1Brush}" BorderBrush="{StaticResource PanelBorderBrush}"
+                                        BorderThickness="1" CornerRadius="4" Padding="14,10" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Description}" Classes="muted" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                            <TextBlock Text="{Binding Url}" FontFamily="Consolas,Menlo,monospace" FontSize="10"
+                                                       Foreground="{StaticResource TextDimBrush}" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="1" Content="Apri ↗" VerticalAlignment="Center"
+                                                Command="{Binding $parent[UserControl].DataContext.OpenLinkCommand}" CommandParameter="{Binding Url}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="GUIDA RAPIDA ALL'INSTALLAZIONE" Classes="section" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding InstallSteps}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:HelpStepItem">
+                                <Grid ColumnDefinitions="36,*" Margin="0,0,0,14">
+                                    <Border Width="26" Height="26" CornerRadius="13" Background="{StaticResource AccentGradientBrush}" VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding Number}" Foreground="White" FontWeight="Bold" FontSize="12"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Description}" Classes="muted" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="ASSISTENZA" Classes="section" Margin="0,0,0,10"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8"
+                               Text="Se l'indicatore in alto e' rosso o la Home segnala un'installazione incompleta, vai nella schermata Diagnostica: elenca esattamente quale file o cartella manca."/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8"
+                               Text="Se le mappe non compaiono o le anteprime sono mancanti, prova Impostazioni → Aggiorna mappe. Se il problema persiste, Impostazioni → Cancella cache anteprime e poi Aggiorna mappe di nuovo."/>
+                    <TextBlock TextWrapping="Wrap"
+                               Text="Per il multiplayer da Internet, ricorda: firewall, port forwarding sul router e indirizzo IP pubblico non vengono gestiti automaticamente da questa app."/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding StatusMessage}" Classes="muted" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

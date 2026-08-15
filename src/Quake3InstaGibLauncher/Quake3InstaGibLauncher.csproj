@@ -1,0 +1,77 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>Quake3InstaGibLauncher</RootNamespace>
+    <AssemblyName>Quake3InstaGibLauncher</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <!-- Metadati applicazione -->
+    <Version>1.5.0</Version>
+    <Product>Quake III InstaGib Launcher</Product>
+    <Company>Launcher non ufficiale</Company>
+    <Description>Launcher grafico per ioquake3 e la mod InstaGib129</Description>
+    <Copyright>Nessun contenuto di gioco incluso: usa l'installazione esistente dell'utente</Copyright>
+
+    <!-- Pubblicazione self-contained win-x64 -->
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- InvariantGlobalization NON e' compatibile con WPF: il data binding usa XmlLanguage/
+         CultureInfo per formattare i valori e va in crash all'avvio se la globalizzazione e'
+         invariante. La disattiviamo esplicitamente (il costo in dimensione del pubblicato e' minimo). -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+
+    <!-- Qualita' del codice -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- MVVM toolkit ufficiale Microsoft: ObservableObject/RelayCommand, riduce boilerplate MVVM,
+         ampiamente usato e mantenuto (dotnet/community-toolkit). -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+
+    <!-- Pfim: decoder puro C# per immagini TGA/DDS senza dipendenze native.
+         Necessario perche' i levelshot di missionpack (e parte di baseq3) sono in formato TGA,
+         non supportato nativamente da System.Windows.Media.Imaging. -->
+    <PackageReference Include="Pfim" Version="0.11.3" />
+
+    <!-- System.Text.Json e' gia' incluso nel runtime .NET 8 (System.Text.Json), usato per
+         impostazioni persistenti e cache metadati mappe: nessun pacchetto aggiuntivo necessario. -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Quake3InstaGibLauncher.Core\Quake3InstaGibLauncher.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Sfondi/pulsanti/loghi predefiniti inclusi nell'app (arte originale: nessun asset reale di
+       Quake III). Copiati accanto all'eseguibile pubblicato cosi' la galleria "Predefiniti" in
+       Personalizza interfaccia (e il logo VStudio Apps di default) li trovano sempre, anche nella
+       build self-contained a file singolo.
+
+       ExcludeFromSingleFile=true e' OBBLIGATORIO qui, non solo un'ottimizzazione: senza questo
+       flag, con PublishSingleFile=true il publish di .NET tenta di raggruppare i file di contenuto
+       piu' grandi (empiricamente: sopra circa 2 MB, sotto quella soglia funziona per puro caso)
+       dentro l'eseguibile invece di copiarli come file sciolti, e nel farlo li scarta in silenzio
+       senza alcun errore ne' avviso in console — bug reale scoperto durante questa sessione: il
+       logo animato vstudio_apps_bronze_quake_logo_360.gif (5.3 MB) spariva dalla cartella
+       pubblicata (verificato: presente in bin\Release, assente in dist\...\Presets\Logos\) pur
+       compilando senza errori. ExcludeFromSingleFile forza questi file a restare SEMPRE file
+       sciolti, indipendentemente dalla dimensione: e' la soluzione ufficiale documentata da
+       Microsoft per questo esatto scenario, non un workaround improvvisato. -->
+  <ItemGroup>
+    <Content Include="Presets\**\*.*" ExcludeFromSingleFile="true">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

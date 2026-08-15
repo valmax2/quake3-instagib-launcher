@@ -1,0 +1,114 @@
+<UserControl x:Class="Quake3InstaGibLauncher.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40,28" MaxWidth="720">
+            <TextBlock Text="{DynamicResource Str.Settings.Title}" Style="{StaticResource Text.Title}" FontSize="30" Margin="0,0,0,20"/>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.InstallationHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Text="{DynamicResource Str.Settings.GameFolder}" Style="{StaticResource Text.Muted}"/>
+                    <Grid Margin="0,4,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding GameRootPath, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        <Button Grid.Column="1" Content="{DynamicResource Str.Settings.Browse}" Style="{StaticResource Btn.Base}" Margin="8,0,0,0" Command="{Binding BrowseGameRootCommand}"/>
+                    </Grid>
+                    <Button Content="{DynamicResource Str.Settings.ApplyPath}" Style="{StaticResource Btn.Primary}" HorizontalAlignment="Left" Command="{Binding ApplyGameRootCommand}"/>
+
+                    <WrapPanel Margin="0,16,0,0">
+                        <Button Content="{DynamicResource Str.Settings.OpenGameFolder}" Style="{StaticResource Btn.Base}" Margin="0,0,8,8" Command="{Binding OpenGameFolderCommand}"/>
+                        <Button Content="{DynamicResource Str.Settings.OpenBaseQ3Folder}" Style="{StaticResource Btn.Base}" Margin="0,0,8,8" Command="{Binding OpenBaseQ3FolderCommand}"/>
+                        <Button Content="{DynamicResource Str.Settings.OpenModFolder}" Style="{StaticResource Btn.Base}" Margin="0,0,8,8" Command="{Binding OpenModFolderCommand}"/>
+                        <Button Content="{DynamicResource Str.Settings.OpenMissionPackFolder}" Style="{StaticResource Btn.Base}" Margin="0,0,8,8" Command="{Binding OpenMissionPackFolderCommand}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.GamePreferences}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding Fov, StringFormat={StaticResource Str.Settings.DefaultFovFormat}}" Style="{StaticResource Text.Body}"/>
+                    <Slider Minimum="90" Maximum="160" Value="{Binding Fov}" Style="{StaticResource Input.Slider}" TickFrequency="5" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.VideoHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <CheckBox Content="{DynamicResource Str.Settings.FixAspectRatio}" IsChecked="{Binding FixAspectRatio}" Margin="0,0,0,6"/>
+                    <TextBlock Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="{DynamicResource Str.Settings.FixAspectRatioInfo}"/>
+
+                    <Grid IsEnabled="{Binding FixAspectRatio}" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.Settings.WidthPx}" Style="{StaticResource Text.Muted}"/>
+                            <TextBox Text="{Binding ScreenWidth, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,10,0">
+                            <TextBlock Text="{DynamicResource Str.Settings.HeightPx}" Style="{StaticResource Text.Muted}"/>
+                            <TextBox Text="{Binding ScreenHeight, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        </StackPanel>
+                        <Button Grid.Column="2" Content="{DynamicResource Str.Settings.DetectResolution}" Style="{StaticResource Btn.Base}" VerticalAlignment="Bottom"
+                                Command="{Binding DetectScreenResolutionCommand}"/>
+                    </Grid>
+
+                    <CheckBox Content="{DynamicResource Str.Settings.Fullscreen}" IsChecked="{Binding Fullscreen}" IsEnabled="{Binding FixAspectRatio}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.VoiceHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="{DynamicResource Str.Settings.VoiceInfo}"/>
+
+                    <TextBlock Text="{DynamicResource Str.Settings.SteamFriendIdLabel}" Style="{StaticResource Text.Muted}"/>
+                    <Grid Margin="0,4,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding SteamFriendInput, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input.TextBox}"/>
+                        <Button Grid.Column="1" Content="{DynamicResource Str.Settings.SteamStartChat}" Style="{StaticResource Btn.Primary}" Margin="8,0,0,0" Command="{Binding StartSteamChatCommand}"/>
+                    </Grid>
+
+                    <Button Content="{DynamicResource Str.Settings.SteamSearch}" Style="{StaticResource Btn.Base}" HorizontalAlignment="Left" Command="{Binding SearchSteamFriendCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.CacheHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <TextBlock Style="{StaticResource Text.Muted}" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Text="{DynamicResource Str.Settings.CacheInfo}"/>
+                    <WrapPanel>
+                        <Button Content="{DynamicResource Str.Settings.RefreshMaps}" Style="{StaticResource Btn.Primary}" Margin="0,0,8,0" Command="{Binding RefreshMapsCommand}" IsEnabled="{Binding IsRefreshing, Converter={StaticResource InverseBool}}"/>
+                        <Button Content="{DynamicResource Str.Settings.ClearCache}" Style="{StaticResource Btn.Base}" Command="{Binding ClearCacheCommand}" IsEnabled="{Binding IsRefreshing, Converter={StaticResource InverseBool}}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Panel.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Settings.ResetHeader}" Style="{StaticResource Text.Section}" Margin="0,0,0,10"/>
+                    <Button Content="{DynamicResource Str.Settings.ResetDefaults}" Style="{StaticResource Btn.Base}" HorizontalAlignment="Left" Command="{Binding ResetDefaultsCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Text.Muted}" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
