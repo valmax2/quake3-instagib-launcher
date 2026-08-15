@@ -9,7 +9,7 @@
     <AssemblyName>Quake3InstaGibLauncher.Mac</AssemblyName>
 
     <!-- Metadati -->
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <Product>Quake III InstaGib Launcher (macOS)</Product>
     <Description>Launcher grafico per ioquake3 e la mod InstaGib129 - versione macOS</Description>
 

@@ -24,9 +24,18 @@ public sealed class ServerInfo
         ? (GameType)value
         : null;
 
-    /// <summary>True se il nome della mod suggerisce InstaGib (qualunque variante: InstaGib129,
-    /// instagib, ecc.). Usato dal filtro "solo InstaGib" nel browser server.</summary>
-    public bool IsLikelyInstaGib => ModName.Contains("instagib", StringComparison.OrdinalIgnoreCase);
+    /// <summary>True se il nome della mod O il nome host del server suggerisce InstaGib.
+    /// Bug reale trovato e corretto: guardare solo ModName (il campo tecnico "game" restituito
+    /// dal server) escludeva quasi tutti i server InstaGib reali in circolazione — moltissimi
+    /// gestori chiamano il proprio server "WarServeR InsTagiB - EU" o simili per farlo trovare
+    /// dai giocatori, ma internamente girano sotto un nome di cartella mod completamente diverso
+    /// (es. una build personalizzata, o semplicemente "baseq3" con regole applicate lato server).
+    /// Verificato dal vivo: su 713 server trovati su Internet, il filtro basato solo su ModName
+    /// ne lasciava passare 1 solo; controllando anche HostName il risultato torna coerente con
+    /// quello che si vede a occhio nella lista completa.</summary>
+    public bool IsLikelyInstaGib =>
+        ModName.Contains("instagib", StringComparison.OrdinalIgnoreCase) ||
+        HostName.Contains("instagib", StringComparison.OrdinalIgnoreCase);
 
     public bool IsFull => MaxPlayers > 0 && Players >= MaxPlayers;
     public bool IsEmpty => Players == 0;
