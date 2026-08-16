@@ -34,8 +34,16 @@ public sealed class KeyBindingCfgService
 
         foreach (var binding in enabled)
         {
-            if (!SafeKeyRegex.IsMatch(binding.Key))
-                throw new LaunchValidationException($"Tasto non valido: \"{binding.Key}\".");
+            // Trim difensivo: un TextBox puo' finire con spazi o caratteri invisibili copiati/
+            // digitati per sbaglio (es. tastiera touch, autocorrezione) che l'utente non vede a
+            // schermo ma fanno fallire il confronto esatto col regex sottostante. Bug reale
+            // riscontrato: un utente vedeva "i" nel campo ma il valore salvato non era il singolo
+            // carattere ASCII pulito, e il messaggio d'errore (solo il valore, non la riga) rendeva
+            // impossibile capire quale delle ~20 voci correggere.
+            var trimmedKey = binding.Key?.Trim() ?? string.Empty;
+            if (!SafeKeyRegex.IsMatch(trimmedKey))
+                throw new LaunchValidationException(
+                    $"Tasto non valido per \"{binding.Description}\": \"{binding.Key}\". Vai su Tasti/Comandi e correggi quella riga (cancella il campo Tasto e riscrivilo).");
             ValidateCommand(binding.Command);
         }
 
@@ -83,7 +91,7 @@ public sealed class KeyBindingCfgService
         sb.AppendLine();
 
         foreach (var binding in bindings)
-            sb.AppendLine($"bind \"{binding.Key.ToUpperInvariant()}\" \"{binding.Command}\"");
+            sb.AppendLine($"bind \"{binding.Key.Trim().ToUpperInvariant()}\" \"{binding.Command}\"");
 
         return sb.ToString();
     }

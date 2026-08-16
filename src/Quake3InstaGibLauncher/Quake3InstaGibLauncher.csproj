@@ -11,7 +11,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
 
     <!-- Metadati applicazione -->
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <Product>Quake III InstaGib Launcher</Product>
     <Company>Launcher non ufficiale</Company>
     <Description>Launcher grafico per ioquake3 e la mod InstaGib129</Description>

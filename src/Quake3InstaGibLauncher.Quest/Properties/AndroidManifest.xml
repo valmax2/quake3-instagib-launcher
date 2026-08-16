@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
+	<!-- INTERNET/ACCESS_NETWORK_STATE: per interrogare il master server e i singoli server
+	     Quake III (stesso protocollo UDP usato dal launcher desktop, vedi Core/Services/Quake3ServerBrowser). -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<!-- Permessi di storage "legacy": innocui da dichiarare anche se il sistema li ignora sopra
+	     Android 10/11 (dove serve invece MANAGE_EXTERNAL_STORAGE, richiesto sotto). -->
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+
+	<!-- MANAGE_EXTERNAL_STORAGE: necessario per scrivere il file di autoconnessione dentro
+	     /sdcard/quake3/InstaGib129/, cartella di UN'ALTRA app (Quake3Quest, com.drbeef.ioq3quest),
+	     non nella cartella privata di questa app. Su Android 11+ senza questo permesso l'accesso
+	     a cartelle di terzi e' bloccato (scoped storage). Concesso dall'utente una volta sola
+	     tramite la schermata di sistema "Accesso a tutti i file", aperta dall'app al primo avvio
+	     (vedi StoragePermissionHelper). Normale e sicuro per un'app installata fuori Play Store. -->
+	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" xmlns:tools="http://schemas.android.com/tools" />
+
+	<!-- Android 11+ nasconde di default la visibilita' tra pacchetti installati (package
+	     visibility): senza questa dichiarazione esplicita, PackageManager.GetLaunchIntentForPackage
+	     per Quake3Quest torna null anche se l'app e' installata, dando un falso "non installato".
+	     Bug reale trovato dal vivo sul Quest 3 dell'utente durante il primo test. -->
+	<queries>
+		<package android:name="com.drbeef.ioq3quest" />
+	</queries>
+
+	<application android:label="Q3 InstaGib Quest" android:icon="@drawable/Icon" android:requestLegacyExternalStorage="true" />
+</manifest>

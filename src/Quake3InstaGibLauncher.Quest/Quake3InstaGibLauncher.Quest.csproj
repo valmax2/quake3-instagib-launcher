@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>29</SupportedOSPlatformVersion>
+    <!-- 29 = Android 10, il minimo richiesto dal firmware Quest 3 (basato su Android 12+,
+         ma il Quest gira app scritte per SDK piu' vecchi senza problemi: 29 e' un livello
+         sicuro e ampiamente compatibile per un'app "pannello 2D" come questa). -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Quake3InstaGibLauncher.Quest</RootNamespace>
+    <AssemblyName>Quake3InstaGibLauncher.Quest</AssemblyName>
+
+    <!-- Metadati -->
+    <Version>1.0.0</Version>
+    <ApplicationId>com.vstudioapps.q3instagiblauncher.quest</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+
+    <!-- Nessun asset reale di Quake III incluso: solo arte originale VStudio Apps, stessa
+         regola delle versioni Windows/Mac. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AndroidResource Include="Resources\**\*.*" />
+    <AndroidResource Include="Icon.png">
+      <Link>Resources\drawable\Icon.png</Link>
+    </AndroidResource>
+  </ItemGroup>
+
+  <!-- Sfondo e logo: caricati come risorse Avalonia standard (avares://), stesso meccanismo
+       cross-platform gia' usato dal progetto Mac - non serve duplicarli come AndroidResource. -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Android" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.20" />
+    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.10" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Quake3InstaGibLauncher.Core\Quake3InstaGibLauncher.Core.csproj" />
+  </ItemGroup>
+</Project>

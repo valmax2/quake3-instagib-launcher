@@ -40,7 +40,15 @@ public partial class MultiplayerSetupViewModel : ObservableObject
 
     // --- Cerca e unisciti a un server esistente ---
     private readonly List<ServerInfo> _allFoundServers = new();
-    public ObservableCollection<ServerInfo> FilteredServers { get; } = new();
+
+    /// <summary>Proprieta' osservabile piena (non una collezione fissa svuotata e riempita
+    /// elemento per elemento): un bug di prestazioni reale, segnalato dall'utente come "lento
+    /// nella gestione filtri", veniva da qui. Con centinaia di server trovati su Internet,
+    /// Clear() + centinaia di Add() singoli forzavano l'ItemsControl a rigenerare il proprio
+    /// albero visivo un elemento alla volta ad ogni singola modifica di un filtro (percepibile
+    /// come un blocco/lag della UI). Riassegnando l'intera collezione in un solo colpo (vedi
+    /// ApplyServerFilters) il binding si aggiorna con un'unica notifica invece di centinaia.</summary>
+    [ObservableProperty] private ObservableCollection<ServerInfo> _filteredServers = new();
     [ObservableProperty] private bool _isSearchingServers;
     [ObservableProperty] private string _searchStatusMessage = string.Empty;
     [ObservableProperty] private ServerInfo? _selectedServer;
@@ -538,9 +546,7 @@ public partial class MultiplayerSetupViewModel : ObservableObject
             ? query.OrderByDescending(s => s.Players)
             : query.OrderBy(s => s.PingMs ?? long.MaxValue);
 
-        FilteredServers.Clear();
-        foreach (var s in query)
-            FilteredServers.Add(s);
+        FilteredServers = new ObservableCollection<ServerInfo>(query);
     }
 
     [RelayCommand]
