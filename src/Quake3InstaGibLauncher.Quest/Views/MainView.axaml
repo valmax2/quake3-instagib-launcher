@@ -65,7 +65,7 @@
                     <TextBlock Text="per Quest" FontSize="18" Foreground="#B8BDC6" VerticalAlignment="Center"/>
                 </StackPanel>
                 <Image Grid.Column="2" Source="avares://Quake3InstaGibLauncher.Quest/Assets/logo.png"
-                       Width="48" Height="48" VerticalAlignment="Center"/>
+                       Width="30" Height="30" Stretch="Uniform" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- ===================== Barra schede ===================== -->
@@ -162,18 +162,47 @@
 
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="Mappa" Foreground="#DDE1E8" VerticalAlignment="Center" FontSize="16"/>
-                                <Button Grid.Column="1" Content="Aggiorna elenco mappe" Padding="14,8" Command="{Binding RefreshMapsCommand}"/>
+                                <Button Grid.Column="1" Content="Aggiorna elenco mappe" Padding="14,8" Command="{Binding RefreshMapsCommand}" IsEnabled="{Binding !IsScanningMaps}"/>
                             </Grid>
-                            <ComboBox ItemsSource="{Binding AvailableMaps}" SelectedItem="{Binding SelectedMap}" HorizontalAlignment="Stretch">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="models:MapInfo">
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{Binding LongName}"/>
-                                            <TextBlock Text="{Binding SourceLabel}" Foreground="#8A8F98" FontSize="12"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+
+                            <!-- Galleria mappe con anteprima reale (levelshot dai .pk3), come sul launcher
+                                 desktop: card cliccabili invece di un menu a tendina di solo testo. -->
+                            <ScrollViewer MaxHeight="360" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding AvailableMapItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:MapPickerItem">
+                                            <Button Margin="4" Padding="0"
+                                                    Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).SelectMapCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <Border Width="150" CornerRadius="8" ClipToBounds="True"
+                                                        BorderThickness="{Binding IsSelected, Converter={x:Static conv:BoolToBorderThicknessConverter.Instance}}"
+                                                        BorderBrush="#E8B923">
+                                                    <StackPanel>
+                                                        <Panel Height="90" Background="#101318">
+                                                            <Image Source="{Binding Preview}" Stretch="UniformToFill" IsVisible="{Binding HasPreview}"/>
+                                                            <TextBlock Text="?" IsVisible="{Binding !HasPreview}" FontSize="28" Foreground="#3A3F48"
+                                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Panel>
+                                                        <Border Background="#1D2128" Padding="8,6">
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Map.LongName}" Foreground="White" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding Map.SourceLabel}" Foreground="#8A8F98" FontSize="11"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                            <TextBlock Text="{Binding SelectedMap.LongName, StringFormat='Mappa scelta: {0}'}" Foreground="#8FD19E" FontSize="14"/>
 
                             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="0,10,0,0">
                                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
@@ -224,9 +253,25 @@
                     <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
                         <StackPanel Spacing="14" MaxWidth="640">
 
-                            <TextBlock Text="Nome (puoi usare i codici colore Quake: ^1 rosso, ^2 verde, ^4 blu, ^7 bianco...)"
-                                       Foreground="#8A8F98" TextWrapping="Wrap" FontSize="13"/>
+                            <TextBlock Text="Nome" Foreground="#DDE1E8" FontSize="16"/>
                             <TextBox Text="{Binding ProfileColoredName}"/>
+
+                            <TextBlock Text="Tocca un colore per aggiungerlo al nome nel punto in cui vuoi che inizi:"
+                                       Foreground="#8A8F98" FontSize="13" Margin="0,-6,0,0"/>
+                            <ItemsControl ItemsSource="{Binding AvailableNameColors}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:NameColorSwatch">
+                                        <Button Margin="0,0,8,8" Padding="0" Width="40" Height="40" CornerRadius="20"
+                                                Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).AppendNameColorCommand}"
+                                                CommandParameter="{Binding Code}">
+                                            <Border CornerRadius="20" Background="{Binding HexColor}" BorderBrush="#444" BorderThickness="1"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
                             <Grid ColumnDefinitions="*,*">
                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">

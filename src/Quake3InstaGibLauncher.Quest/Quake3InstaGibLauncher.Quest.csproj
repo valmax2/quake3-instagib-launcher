@@ -19,6 +19,10 @@
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
 
+    <!-- Richiesto da QuestImageConversionService per copiare pixel TGA decodificati con Pfim
+         dentro un SKBitmap tramite puntatore (stesso pattern del progetto Mac). -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
     <!-- Nessun asset reale di Quake III incluso: solo arte originale VStudio Apps, stessa
          regola delle versioni Windows/Mac. -->
   </PropertyGroup>
@@ -43,6 +47,13 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.20" />
     <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.10" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+
+    <!-- Decodifica levelshot (anteprime mappa) JPG/PNG/TGA -> PNG per la galleria mappe, stessa
+         accoppiata SkiaSharp+Pfim gia' usata dal progetto Mac (vedi MacImageConversionService):
+         SkiaSharp e' comunque una dipendenza transitiva di Avalonia (motore di rendering), la
+         referenziamo esplicitamente per poterla chiamare direttamente dal codice. -->
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+    <PackageReference Include="Pfim" Version="0.11.3" />
   </ItemGroup>
 
   <ItemGroup>

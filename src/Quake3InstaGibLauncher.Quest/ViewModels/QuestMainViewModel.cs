@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Quake3InstaGibLauncher.Core.Models;
@@ -12,6 +13,28 @@ public enum QuestTab { Multiplayer, Lan, Bot, Profile }
 
 public sealed record ModelColorOption(int Value, string Name);
 
+/// <summary>Uno degli 8 codici colore standard Quake III (^0-^7) mostrato come pulsante-palette
+/// cliccabile nella scheda Personaggio, per comporre il nome colorato senza dover ricordare a
+/// memoria i codici - stessa idea della palette del launcher desktop.</summary>
+public sealed record NameColorSwatch(string Code, string HexColor);
+
+/// <summary>Una mappa nella galleria della scheda Bot, con l'anteprima (levelshot) gia' decodificata
+/// se disponibile. IsSelected e' locale alla UI (evidenzia la card scelta), non persiste.</summary>
+public sealed partial class MapPickerItem : ObservableObject
+{
+    public MapInfo Map { get; }
+    public Bitmap? Preview { get; }
+    public bool HasPreview => Preview is not null;
+
+    [ObservableProperty] private bool _isSelected;
+
+    public MapPickerItem(MapInfo map, Bitmap? preview)
+    {
+        Map = map;
+        Preview = preview;
+    }
+}
+
 /// <summary>
 /// ViewModel unico dell'app: tre "schede" (Multiplayer/Bot/Personaggio) pensate per essere usate
 /// col puntatore laser del controller Quest. Riusa il piu' possibile il Core gia' collaudato sul
@@ -23,6 +46,7 @@ public partial class QuestMainViewModel : ObservableObject
     private readonly Quake3ServerBrowser _browser = new();
     private readonly QuestLaunchService _launchService = new();
     private readonly QuestSettingsService _settingsService = new();
+    private readonly QuestMapPreviewService _mapPreviewService = new();
     private readonly QuestAppSettings _appSettings;
 
     private List<ServerInfo> _allFoundServers = new();
@@ -118,7 +142,7 @@ public partial class QuestMainViewModel : ObservableObject
     }
 
     // ===================== Scheda Bot (allenamento in locale) =====================
-    [ObservableProperty] private ObservableCollection<MapInfo> _availableMaps = new();
+    [ObservableProperty] private ObservableCollection<MapPickerItem> _availableMapItems = new();
 
     // NotifyCanExecuteChangedFor e' necessario qui (a differenza di Play/PlayLan): il pulsante
     // "AVVIA PARTITA CONTRO BOT" non ha un IsEnabled bindato a parte, si affida al solo
@@ -160,6 +184,18 @@ public partial class QuestMainViewModel : ObservableObject
     };
 
     public IReadOnlyList<int> AvailableCrosshairStyles { get; } = Enumerable.Range(1, 15).ToList();
+
+    /// <summary>Gli 8 codici colore standard Quake III, colori reali approssimati per lo swatch.</summary>
+    public IReadOnlyList<NameColorSwatch> AvailableNameColors { get; } = new[]
+    {
+        new NameColorSwatch("0", "#1A1A1A"), new NameColorSwatch("1", "#E33"),
+        new NameColorSwatch("2", "#3C3"), new NameColorSwatch("3", "#DD3"),
+        new NameColorSwatch("4", "#33E"), new NameColorSwatch("5", "#3CC"),
+        new NameColorSwatch("6", "#D3D"), new NameColorSwatch("7", "#EEE"),
+    };
+
+    [RelayCommand]
+    private void AppendNameColor(string code) => ProfileColoredName += $"^{code}";
 
     partial void OnProfileColoredNameChanged(string value) => SaveProfile(p => p.ColoredName = value);
     partial void OnProfileCrosshairStyleChanged(int value) => SaveProfile(p => p.CrosshairStyle = value);
@@ -271,23 +307,67 @@ public partial class QuestMainViewModel : ObservableObject
     private bool CanPlay(ServerInfo? server) => (server ?? SelectedServer) is not null;
 
     // ===================== Comandi Bot =====================
-    [RelayCommand]
-    private void RefreshMaps()
+    [ObservableProperty] private bool _isScanningMaps;
+
+    [RelayCommand(CanExecute = nameof(CanRefreshMaps))]
+    private async Task RefreshMapsAsync()
     {
+        IsScanningMaps = true;
+        BotStatusMessage = "Scansione mappe in corso (puo' richiedere qualche secondo con molte mappe custom)...";
+
         try
         {
-            var result = _launchService.ScanMaps();
-            AvailableMaps = new ObservableCollection<MapInfo>(result.Maps.OrderBy(m => m.TechnicalName));
-            SelectedMap ??= AvailableMaps.FirstOrDefault();
+            // Fuori dal thread UI: con i pacchetti mappe community (es. q3wpak0-4) si arriva
+            // facilmente a un centinaio di mappe, decodificare tutte le anteprime in modo
+            // sincrono sul thread UI congelerebbe visibilmente l'app per diversi secondi.
+            var items = await Task.Run(() =>
+            {
+                var result = _launchService.ScanMaps();
+                return result.Maps
+                    .OrderBy(m => m.TechnicalName)
+                    .Select(m =>
+                    {
+                        var previewPath = _mapPreviewService.GetOrCreatePreviewPath(m);
+                        Bitmap? preview = null;
+                        if (previewPath is not null)
+                        {
+                            try { preview = new Bitmap(previewPath); }
+                            catch { /* file di cache corrotto: si mostra il segnaposto */ }
+                        }
+                        return new MapPickerItem(m, preview);
+                    })
+                    .ToList();
+            });
 
-            BotStatusMessage = AvailableMaps.Count > 0
-                ? $"{AvailableMaps.Count} mappe trovate."
+            AvailableMapItems = new ObservableCollection<MapPickerItem>(items);
+
+            var toSelect = AvailableMapItems.FirstOrDefault(i => i.Map.TechnicalName == SelectedMap?.TechnicalName)
+                ?? AvailableMapItems.FirstOrDefault();
+            SelectMap(toSelect);
+
+            BotStatusMessage = AvailableMapItems.Count > 0
+                ? $"{AvailableMapItems.Count} mappe trovate."
                 : "Nessuna mappa trovata: apri prima Quake3Quest almeno una volta.";
         }
         catch (Exception ex)
         {
             BotStatusMessage = $"Scansione mappe fallita: {ex.Message}";
         }
+        finally
+        {
+            IsScanningMaps = false;
+        }
+    }
+
+    private bool CanRefreshMaps() => !IsScanningMaps;
+
+    [RelayCommand]
+    private void SelectMap(MapPickerItem? item)
+    {
+        foreach (var existing in AvailableMapItems)
+            existing.IsSelected = ReferenceEquals(existing, item);
+
+        SelectedMap = item?.Map;
     }
 
     [RelayCommand(CanExecute = nameof(CanStartBotMatch))]

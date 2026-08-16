@@ -22,6 +22,30 @@ namespace Quake3InstaGibLauncher.Quest;
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity<App>
 {
+    /// <summary>
+    /// Riferimento all'Activity corrente, usato da QuestLaunchService per avviare Quake3Quest
+    /// SENZA il flag NEW_TASK. Bug reale segnalato dall'utente: avviando Quake3Quest da
+    /// Application.Context (l'unico modo consentito da Android per farlo senza un'Activity: il
+    /// flag NEW_TASK e' obbligatorio in quel caso) si crea un task separato nella cronologia
+    /// recenti, quindi uscendo/tornando indietro da Quake3Quest il sistema NON torna a questa
+    /// app ma alla Home del visore. Avviandolo invece da questa Activity, nello stesso task,
+    /// il normale comportamento "indietro" di Android riporta qui.
+    /// </summary>
+    public static MainActivity? Current { get; private set; }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        Current = this;
+    }
+
+    protected override void OnPause()
+    {
+        if (ReferenceEquals(Current, this))
+            Current = null;
+        base.OnPause();
+    }
+
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)

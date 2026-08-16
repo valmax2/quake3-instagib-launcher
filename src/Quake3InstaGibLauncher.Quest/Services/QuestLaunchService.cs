@@ -153,18 +153,27 @@ public sealed class QuestLaunchService
 
     private QuestLaunchOutcome WriteCommandlineAndLaunch(List<string> engineArgs, string successMessage)
     {
-        var context = global::Android.App.Application.Context;
-
         var fullArgs = new List<string> { "+set", "fs_basepath", $"{SdCardEngineRoot}/" };
         fullArgs.AddRange(engineArgs);
 
         File.WriteAllText(CommandlineTxtPath, JoinArgsForCommandlineTxt(fullArgs));
 
+        // Preferiamo avviare dall'Activity corrente (senza NEW_TASK) cosi' Quake3Quest resta
+        // nello STESSO task Android della nostra app: uscendo/tornando indietro da Quake3Quest,
+        // il sistema torna qui invece che alla Home del visore (bug reale segnalato dall'utente:
+        // "quando esco dal gioco non mi fa tornare dove cerco le partite"). Se per qualche motivo
+        // l'Activity non e' disponibile (avvio da un contesto anomalo), ripieghiamo su
+        // Application.Context + NEW_TASK, l'unica combinazione che Android accetta in quel caso.
+        var activity = MainActivity.Current;
+        var context = (Android.Content.Context?)activity ?? global::Android.App.Application.Context;
+
         var intent = context.PackageManager?.GetLaunchIntentForPackage(QuakeQuestPackageName);
         if (intent is null)
             return new QuestLaunchOutcome(false, "Impossibile creare l'avvio per Quake3Quest.");
 
-        intent.AddFlags(ActivityFlags.NewTask);
+        if (activity is null)
+            intent.AddFlags(ActivityFlags.NewTask);
+
         context.StartActivity(intent);
 
         return new QuestLaunchOutcome(true, successMessage);
