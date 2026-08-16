@@ -144,7 +144,7 @@
                     </WrapPanel>
 
                     <Border Grid.Row="1" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="4">
-                        <ScrollViewer>
+                        <ScrollViewer x:Name="InternetScrollViewer">
                             <ItemsControl ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource ServerRowTemplate}"/>
                         </ScrollViewer>
                     </Border>
@@ -161,7 +161,7 @@
                 <!-- ===================== SCHEDA LAN ===================== -->
                 <Grid Grid.Row="1" IsVisible="{Binding IsLanTab}" RowDefinitions="*,Auto">
                     <Border Grid.Row="0" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="4">
-                        <ScrollViewer>
+                        <ScrollViewer x:Name="LanScrollViewer">
                             <ItemsControl ItemsSource="{Binding LanServers}" ItemTemplate="{StaticResource LanServerRowTemplate}"/>
                         </ScrollViewer>
                     </Border>
@@ -185,7 +185,7 @@
 
                     <!-- Galleria mappe con anteprima reale (levelshot dai .pk3): stella per i preferiti,
                          bordo dorato sulla card selezionata. -->
-                    <ScrollViewer Grid.Row="1">
+                    <ScrollViewer Grid.Row="1" x:Name="BotMapsScrollViewer">
                         <ItemsControl ItemsSource="{Binding VisibleMapItems}" ItemTemplate="{StaticResource MapCardTemplate}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
@@ -239,7 +239,7 @@
                 </Grid>
 
                 <!-- ===================== SCHEDA OSPITA ===================== -->
-                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsHostTab}">
+                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsHostTab}" x:Name="HostScrollViewer">
                     <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
                         <StackPanel Spacing="14" MaxWidth="700">
                             <TextBlock Text="{Binding SelectedMap.LongName, StringFormat='Mappa: {0} (scelta nella scheda BOT)'}"
@@ -308,7 +308,7 @@
                 </ScrollViewer>
 
                 <!-- ===================== SCHEDA PERSONAGGIO ===================== -->
-                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsProfileTab}">
+                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsProfileTab}" x:Name="ProfileScrollViewer">
                     <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
                         <StackPanel Spacing="14" MaxWidth="700">
 
