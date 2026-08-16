@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Provider;
 using Quake3InstaGibLauncher.Core.Models;
 using Quake3InstaGibLauncher.Core.Services;
+using Quake3InstaGibLauncher.Quest.Models;
 
 namespace Quake3InstaGibLauncher.Quest.Services;
 
@@ -105,7 +106,7 @@ public sealed class QuestLaunchService
     /// <summary>Si unisce a un server trovato dal browser. Non forza fs_game: come sul desktop, il
     /// motore negozia da solo la mod corretta col server durante la connessione (BuildJoinArguments,
     /// stessa logica, stessi cvar rete/profilo).</summary>
-    public QuestLaunchOutcome PrepareAndJoin(ServerInfo server, PlayerProfile? player)
+    public QuestLaunchOutcome PrepareAndJoin(ServerInfo server, PlayerProfile? player, int fov = 100, VideoSettings? video = null)
     {
         var precondition = CheckCommonPreconditions();
         if (precondition is not null) return new QuestLaunchOutcome(false, precondition);
@@ -114,14 +115,14 @@ public sealed class QuestLaunchService
         {
             var args = CommandBuilder.BuildJoinArguments(
                 server.Address, server.Port, modFolderHint: server.ModName, password: null,
-                fov: 100,
+                fov: fov,
                 // false: su Quest la risoluzione/aspect ratio la gestisce il compositor VR
                 // (r_mode -2 e' gia' impostato dall'autoexec.cfg di Quake3Quest stesso), forzarli
                 // di nuovo qui rischierebbe solo di confliggere con il rendering stereo.
                 fixAspectRatio: false, screenWidth: 0, screenHeight: 0, fullscreen: true,
                 player: player);
 
-            return WriteCommandlineAndLaunch(args, $"Avvio Quake3Quest verso {server.HostName}...");
+            return WriteCommandlineAndLaunch(args, $"Avvio Quake3Quest verso {server.HostName}...", video);
         }
         catch (Exception ex)
         {
@@ -132,7 +133,7 @@ public sealed class QuestLaunchService
     /// <summary>Avvia una partita locale contro bot (allenamento), stessa logica/cvar del launcher
     /// desktop (BuildLocalArguments): mappa, numero/difficolta' bot, modalita' di gioco, mod
     /// InstaGib129 opzionale.</summary>
-    public QuestLaunchOutcome PrepareAndLaunchBotMatch(LocalMatchOptions options)
+    public QuestLaunchOutcome PrepareAndLaunchBotMatch(LocalMatchOptions options, VideoSettings? video = null)
     {
         var precondition = CheckCommonPreconditions();
         if (precondition is not null) return new QuestLaunchOutcome(false, precondition);
@@ -143,7 +144,7 @@ public sealed class QuestLaunchService
         try
         {
             var args = CommandBuilder.BuildLocalArguments(options, rotationCfgFileName: null);
-            return WriteCommandlineAndLaunch(args, $"Avvio partita contro {options.BotCount} bot su {options.MapTechnicalName}...");
+            return WriteCommandlineAndLaunch(args, $"Avvio partita contro {options.BotCount} bot su {options.MapTechnicalName}...", video);
         }
         catch (Exception ex)
         {
@@ -151,32 +152,79 @@ public sealed class QuestLaunchService
         }
     }
 
-    private QuestLaunchOutcome WriteCommandlineAndLaunch(List<string> engineArgs, string successMessage)
+    /// <summary>Ospita una partita (non si unisce a una esistente): stessa logica/cvar del launcher
+    /// desktop (BuildMultiplayerArguments) - nome partita, mappa, bot, password, LAN/Internet.</summary>
+    public QuestLaunchOutcome PrepareAndHost(MultiplayerMatchOptions options, VideoSettings? video = null)
+    {
+        var precondition = CheckCommonPreconditions();
+        if (precondition is not null) return new QuestLaunchOutcome(false, precondition);
+
+        if (options.UseInstaGibMod && !IsInstaGibModInstalled())
+            return new QuestLaunchOutcome(false, $"Mancano i file della mod: copia InstaGib129.pk3 dentro {InstaGibModPath} sul visore, poi riprova.");
+
+        try
+        {
+            var args = CommandBuilder.BuildMultiplayerArguments(options, rotationCfgFileName: null);
+            return WriteCommandlineAndLaunch(args, $"Ospito \"{options.ServerName}\" su {options.MapTechnicalName}...", video);
+        }
+        catch (Exception ex)
+        {
+            return new QuestLaunchOutcome(false, $"Errore durante l'avvio: {ex.Message}");
+        }
+    }
+
+    private QuestLaunchOutcome WriteCommandlineAndLaunch(List<string> engineArgs, string successMessage, VideoSettings? video = null)
     {
         var fullArgs = new List<string> { "+set", "fs_basepath", $"{SdCardEngineRoot}/" };
         fullArgs.AddRange(engineArgs);
+        fullArgs.AddRange(BuildVideoOverrideArgs(video));
 
         File.WriteAllText(CommandlineTxtPath, JoinArgsForCommandlineTxt(fullArgs));
 
-        // Preferiamo avviare dall'Activity corrente (senza NEW_TASK) cosi' Quake3Quest resta
-        // nello STESSO task Android della nostra app: uscendo/tornando indietro da Quake3Quest,
-        // il sistema torna qui invece che alla Home del visore (bug reale segnalato dall'utente:
-        // "quando esco dal gioco non mi fa tornare dove cerco le partite"). Se per qualche motivo
-        // l'Activity non e' disponibile (avvio da un contesto anomalo), ripieghiamo su
-        // Application.Context + NEW_TASK, l'unica combinazione che Android accetta in quel caso.
-        var activity = MainActivity.Current;
-        var context = (Android.Content.Context?)activity ?? global::Android.App.Application.Context;
+        // NOTA su "torna all'app dopo aver chiuso la partita": e' stato provato ad avviare
+        // Quake3Quest nello STESSO task Android di questa app (niente NEW_TASK) per sfruttare il
+        // normale "indietro" di Android - non ha risolto: l'utente continua a finire alla Home
+        // del Quest invece che qui. Causa piu' probabile: Quake3Quest (motore nativo) chiude il
+        // proprio processo direttamente quando si preme "Esci" invece di fare una normale
+        // navigazione "indietro" Android, e questo scavalca qualunque impostazione di task facciamo
+        // noi lato launcher. Percio' si torna al normale NEW_TASK (piu' prevedibile/sicuro: nessun
+        // rischio che una chiusura brusca dell'altra app comprometta il nostro stesso task).
+        var context = global::Android.App.Application.Context;
 
         var intent = context.PackageManager?.GetLaunchIntentForPackage(QuakeQuestPackageName);
         if (intent is null)
             return new QuestLaunchOutcome(false, "Impossibile creare l'avvio per Quake3Quest.");
 
-        if (activity is null)
-            intent.AddFlags(ActivityFlags.NewTask);
-
+        intent.AddFlags(ActivityFlags.NewTask);
         context.StartActivity(intent);
 
         return new QuestLaunchOutcome(true, successMessage);
+    }
+
+    /// <summary>Cvar video applicati SOLO se l'utente li ha esplicitamente cambiati dai valori di
+    /// fabbrica (0/null): luminosita' (r_gamma) e anti-aliasing (r_ext_multisample) sono cvar
+    /// standard ioquake3, dovrebbero esistere su qualunque fork incluso questo. La densita' di
+    /// rendering VR e' un tentativo best-effort (vr_pixelDensity): non verificato su hardware
+    /// reale quale sia il nome esatto usato da questo specifico fork, innocuo se il motore lo
+    /// ignora perche' sconosciuto.</summary>
+    private static IEnumerable<string> BuildVideoOverrideArgs(VideoSettings? video)
+    {
+        if (video is null) yield break;
+
+        if (video.AntiAliasingSamples is { } samples && samples > 0)
+        {
+            yield return "+set"; yield return "r_ext_multisample"; yield return samples.ToString();
+        }
+
+        if (video.Gamma is { } gamma && Math.Abs(gamma - 1.0) > 0.001)
+        {
+            yield return "+set"; yield return "r_gamma"; yield return gamma.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        if (video.VrPixelDensity is { } density && Math.Abs(density - 1.0) > 0.001)
+        {
+            yield return "+set"; yield return "vr_pixelDensity"; yield return density.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 
     /// <summary>CommandBuilder produce una lista di token gia' pronta per ProcessStartInfo.ArgumentList

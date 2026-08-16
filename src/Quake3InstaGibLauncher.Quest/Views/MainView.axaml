@@ -48,6 +48,38 @@
                 </Grid>
             </Border>
         </DataTemplate>
+
+        <DataTemplate x:Key="MapCardTemplate" x:DataType="vm:MapPickerItem">
+            <Grid Margin="4" Width="150">
+                <Button Padding="0"
+                        Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).SelectMapCommand}"
+                        CommandParameter="{Binding}">
+                    <Border CornerRadius="8" ClipToBounds="True"
+                            BorderThickness="{Binding IsSelected, Converter={x:Static conv:BoolToBorderThicknessConverter.Instance}}"
+                            BorderBrush="#E8B923">
+                        <StackPanel>
+                            <Panel Height="90" Background="#101318">
+                                <Image Source="{Binding Preview}" Stretch="UniformToFill" IsVisible="{Binding HasPreview}"/>
+                                <TextBlock Text="?" IsVisible="{Binding !HasPreview}" FontSize="28" Foreground="#3A3F48"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Panel>
+                            <Border Background="#1D2128" Padding="8,6">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Map.LongName}" Foreground="White" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Map.SourceLabel}" Foreground="#8A8F98" FontSize="11"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Button>
+                <Button Content="{Binding IsFavorite, Converter={x:Static conv:FavoriteStarConverter.Instance}}"
+                        Width="30" Height="30" Padding="0" CornerRadius="15"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0"
+                        Background="#B3000000" Foreground="#E8B923" FontSize="16"
+                        Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).ToggleFavoriteMapCommand}"
+                        CommandParameter="{Binding}"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Panel>
@@ -70,26 +102,14 @@
 
             <!-- ===================== Barra schede ===================== -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                <Button Content="INTERNET" Padding="18,12" FontWeight="Bold" Command="{Binding ShowMultiplayerTabCommand}">
-                    <Button.Styles>
-                        <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
-                    </Button.Styles>
-                </Button>
-                <Button Content="LAN" Padding="18,12" FontWeight="Bold" Command="{Binding ShowLanTabCommand}">
-                    <Button.Styles>
-                        <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
-                    </Button.Styles>
-                </Button>
-                <Button Content="GIOCA CONTRO BOT" Padding="18,12" FontWeight="Bold" Command="{Binding ShowBotTabCommand}">
-                    <Button.Styles>
-                        <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
-                    </Button.Styles>
-                </Button>
-                <Button Content="PERSONAGGIO" Padding="18,12" FontWeight="Bold" Command="{Binding ShowProfileTabCommand}">
-                    <Button.Styles>
-                        <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
-                    </Button.Styles>
-                </Button>
+                <StackPanel.Styles>
+                    <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
+                </StackPanel.Styles>
+                <Button Content="INTERNET" Padding="16,12" FontWeight="Bold" Command="{Binding ShowMultiplayerTabCommand}"/>
+                <Button Content="LAN" Padding="16,12" FontWeight="Bold" Command="{Binding ShowLanTabCommand}"/>
+                <Button Content="BOT" Padding="16,12" FontWeight="Bold" Command="{Binding ShowBotTabCommand}"/>
+                <Button Content="OSPITA" Padding="16,12" FontWeight="Bold" Command="{Binding ShowHostTabCommand}"/>
+                <Button Content="PERSONAGGIO" Padding="16,12" FontWeight="Bold" Command="{Binding ShowProfileTabCommand}"/>
             </StackPanel>
 
             <!-- ===================== Avviso permesso file (comune a tutte le schede che lanciano il gioco) ===================== -->
@@ -156,55 +176,28 @@
                 </Grid>
 
                 <!-- ===================== SCHEDA BOT ===================== -->
-                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsBotTab}">
-                    <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
-                        <StackPanel Spacing="14" MaxWidth="640">
+                <Grid Grid.Row="1" IsVisible="{Binding IsBotTab}" RowDefinitions="Auto,*,Auto,Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
+                        <TextBlock Grid.Column="0" Text="Mappa" Foreground="#DDE1E8" VerticalAlignment="Center" FontSize="16"/>
+                        <CheckBox Grid.Column="1" Content="Solo preferite" IsChecked="{Binding ShowOnlyFavoriteMaps}" Foreground="#DDE1E8" Margin="0,0,10,0"/>
+                        <Button Grid.Column="2" Content="Aggiorna elenco mappe" Padding="14,8" Command="{Binding RefreshMapsCommand}" IsEnabled="{Binding !IsScanningMaps}"/>
+                    </Grid>
 
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0" Text="Mappa" Foreground="#DDE1E8" VerticalAlignment="Center" FontSize="16"/>
-                                <Button Grid.Column="1" Content="Aggiorna elenco mappe" Padding="14,8" Command="{Binding RefreshMapsCommand}" IsEnabled="{Binding !IsScanningMaps}"/>
-                            </Grid>
+                    <!-- Galleria mappe con anteprima reale (levelshot dai .pk3): stella per i preferiti,
+                         bordo dorato sulla card selezionata. -->
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl ItemsSource="{Binding VisibleMapItems}" ItemTemplate="{StaticResource MapCardTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
 
-                            <!-- Galleria mappe con anteprima reale (levelshot dai .pk3), come sul launcher
-                                 desktop: card cliccabili invece di un menu a tendina di solo testo. -->
-                            <ScrollViewer MaxHeight="360" HorizontalScrollBarVisibility="Disabled">
-                                <ItemsControl ItemsSource="{Binding AvailableMapItems}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:MapPickerItem">
-                                            <Button Margin="4" Padding="0"
-                                                    Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).SelectMapCommand}"
-                                                    CommandParameter="{Binding}">
-                                                <Border Width="150" CornerRadius="8" ClipToBounds="True"
-                                                        BorderThickness="{Binding IsSelected, Converter={x:Static conv:BoolToBorderThicknessConverter.Instance}}"
-                                                        BorderBrush="#E8B923">
-                                                    <StackPanel>
-                                                        <Panel Height="90" Background="#101318">
-                                                            <Image Source="{Binding Preview}" Stretch="UniformToFill" IsVisible="{Binding HasPreview}"/>
-                                                            <TextBlock Text="?" IsVisible="{Binding !HasPreview}" FontSize="28" Foreground="#3A3F48"
-                                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Panel>
-                                                        <Border Background="#1D2128" Padding="8,6">
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Map.LongName}" Foreground="White" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
-                                                                <TextBlock Text="{Binding Map.SourceLabel}" Foreground="#8A8F98" FontSize="11"/>
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                    <TextBlock Grid.Row="2" Text="{Binding SelectedMap.LongName, StringFormat='Mappa scelta: {0}'}" Foreground="#8FD19E" FontSize="14" Margin="0,8,0,0"/>
 
-                            <TextBlock Text="{Binding SelectedMap.LongName, StringFormat='Mappa scelta: {0}'}" Foreground="#8FD19E" FontSize="14"/>
-
-                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="0,10,0,0">
+                    <Border Grid.Row="3" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,10,0,0">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
                                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
                                     <TextBlock Text="Numero di bot" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableBotCounts}" SelectedItem="{Binding BotCount}" HorizontalAlignment="Stretch"/>
@@ -213,37 +206,103 @@
                                     <TextBlock Text="Difficolta' bot (1-5)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableBotSkills}" SelectedItem="{Binding BotSkill}" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="Modalita'" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableGameTypes}" SelectedItem="{Binding BotGameType}" HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Converter={StaticResource GameTypeDisplay}}"/>
-                                            </DataTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding Converter={StaticResource GameTypeDisplay}}"/></DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                 </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" VerticalAlignment="Bottom">
+                                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom">
                                     <CheckBox Content="Usa mod InstaGib129" IsChecked="{Binding BotUseInstaGibMod}" Foreground="#DDE1E8"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*,Auto">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Frag limit" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding BotFragLimit}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <TextBlock Text="Time limit (minuti)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding BotTimeLimit}"/>
+                                </StackPanel>
+                                <Button Grid.Column="2" Content="AVVIA PARTITA CONTRO BOT" FontWeight="Bold" Padding="20,14" FontSize="15"
+                                        Background="#C7361F" Foreground="White" VerticalAlignment="Bottom"
+                                        Command="{Binding StartBotMatchCommand}"/>
+                            </Grid>
+
+                            <TextBlock Text="{Binding BotStatusMessage}" Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ===================== SCHEDA OSPITA ===================== -->
+                <ScrollViewer Grid.Row="1" IsVisible="{Binding IsHostTab}">
+                    <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
+                        <StackPanel Spacing="14" MaxWidth="700">
+                            <TextBlock Text="{Binding SelectedMap.LongName, StringFormat='Mappa: {0} (scelta nella scheda BOT)'}"
+                                       Foreground="#8FD19E" FontSize="15"/>
+
+                            <StackPanel>
+                                <TextBlock Text="Nome partita" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                <TextBox Text="{Binding HostServerName}"/>
+                            </StackPanel>
+
+                            <Grid ColumnDefinitions="*,*,*">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Porta" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding HostPort}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <TextBlock Text="Giocatori massimi" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding HostMaxClients}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Password (opzionale)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding HostPassword}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Modalita'" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding AvailableGameTypes}" SelectedItem="{Binding HostGameType}" HorizontalAlignment="Stretch">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding Converter={StaticResource GameTypeDisplay}}"/></DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                                    <CheckBox Content="Solo rete locale (LAN)" IsChecked="{Binding HostIsLan}" Foreground="#DDE1E8"/>
+                                    <CheckBox Content="Usa mod InstaGib129" IsChecked="{Binding HostUseInstaGibMod}" Foreground="#DDE1E8" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <CheckBox Content="Riempi con bot" IsChecked="{Binding HostBotsEnabled}" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding HostBotMinPlayers}" IsEnabled="{Binding HostBotsEnabled}"/>
                                 </StackPanel>
                             </Grid>
 
                             <Grid ColumnDefinitions="*,*">
                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="Frag limit" Foreground="#DDE1E8" Margin="0,0,0,4"/>
-                                    <TextBox Text="{Binding BotFragLimit}"/>
+                                    <TextBox Text="{Binding HostFragLimit}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="Time limit (minuti)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
-                                    <TextBox Text="{Binding BotTimeLimit}"/>
+                                    <TextBox Text="{Binding HostTimeLimit}"/>
                                 </StackPanel>
                             </Grid>
 
-                            <Button Content="AVVIA PARTITA CONTRO BOT" FontWeight="Bold" Padding="24,14" FontSize="16"
+                            <Button Content="OSPITA PARTITA" FontWeight="Bold" Padding="24,14" FontSize="16"
                                     Background="#C7361F" Foreground="White" HorizontalAlignment="Left"
-                                    Command="{Binding StartBotMatchCommand}"/>
+                                    Command="{Binding StartHostCommand}"/>
 
-                            <TextBlock Text="{Binding BotStatusMessage}" Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="15"/>
+                            <TextBlock Text="{Binding HostStatusMessage}" Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="15"/>
                         </StackPanel>
                     </Border>
                 </ScrollViewer>
@@ -251,7 +310,7 @@
                 <!-- ===================== SCHEDA PERSONAGGIO ===================== -->
                 <ScrollViewer Grid.Row="1" IsVisible="{Binding IsProfileTab}">
                     <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
-                        <StackPanel Spacing="14" MaxWidth="640">
+                        <StackPanel Spacing="14" MaxWidth="700">
 
                             <TextBlock Text="Nome" Foreground="#DDE1E8" FontSize="16"/>
                             <TextBox Text="{Binding ProfileColoredName}"/>
@@ -273,33 +332,65 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <Grid ColumnDefinitions="*,*">
-                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                    <TextBlock Text="Stile mirino" Foreground="#DDE1E8" Margin="0,0,0,4"/>
-                                    <ComboBox ItemsSource="{Binding AvailableCrosshairStyles}" SelectedItem="{Binding ProfileCrosshairStyle}" HorizontalAlignment="Stretch"/>
+                            <Border Height="1" Background="#2A2F38" Margin="0,4"/>
+
+                            <Grid ColumnDefinitions="*,220">
+                                <StackPanel Grid.Column="0" Spacing="10">
+                                    <Grid ColumnDefinitions="*,*">
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                            <TextBlock Text="Stile mirino" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                            <ComboBox ItemsSource="{Binding AvailableCrosshairStyles}" SelectedItem="{Binding ProfileCrosshairStyle}" HorizontalAlignment="Stretch"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Dimensione (4-96)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                            <TextBox Text="{Binding ProfileCrosshairSize}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <TextBlock Text="Colore mirino" Foreground="#DDE1E8"/>
+                                    <ItemsControl ItemsSource="{Binding AvailableCrosshairColors}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Margin="0,0,8,0" Padding="0" Width="34" Height="34" CornerRadius="17"
+                                                        Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).SetCrosshairColorCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <Border CornerRadius="17" Background="{Binding}" BorderBrush="#444" BorderThickness="1"/>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <CheckBox Content="Mirino colorato in base alla vita del bersaglio" IsChecked="{Binding ProfileCrosshairHealthColor}" Foreground="#DDE1E8"/>
+                                    <CheckBox Content="Mirino lampeggia quando colpisci" IsChecked="{Binding ProfileCrosshairPulseOnHit}" Foreground="#DDE1E8"/>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="Dimensione mirino (4-96)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
-                                    <TextBox Text="{Binding ProfileCrosshairSize}"/>
-                                </StackPanel>
+
+                                <!-- Anteprima procedurale del mirino: forma originale (croce + puntino), NON
+                                     un asset del gioco - mostra davvero taglia/colore scelti. -->
+                                <Border Grid.Column="1" Width="200" Height="200" Background="#0D1013" CornerRadius="10"
+                                        BorderBrush="#2A2F38" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                    <Panel>
+                                        <Rectangle Width="{Binding CrosshairPreviewArmLength}" Height="{Binding CrosshairPreviewThickness}"
+                                                   Fill="{Binding ProfileCrosshairColorHex}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="{Binding CrosshairPreviewThickness}" Height="{Binding CrosshairPreviewArmLength}"
+                                                   Fill="{Binding ProfileCrosshairColorHex}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Ellipse Width="{Binding CrosshairPreviewDotSize}" Height="{Binding CrosshairPreviewDotSize}"
+                                                 Fill="{Binding ProfileCrosshairColorHex}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Anteprima" Foreground="#5A5F68" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
+                                    </Panel>
+                                </Border>
                             </Grid>
 
-                            <StackPanel>
-                                <TextBlock Text="Colore mirino (es. #FFFFFF)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding ProfileCrosshairColorHex}"/>
-                            </StackPanel>
-
-                            <CheckBox Content="Mirino colorato in base alla vita del bersaglio" IsChecked="{Binding ProfileCrosshairHealthColor}" Foreground="#DDE1E8"/>
-                            <CheckBox Content="Mirino lampeggia quando colpisci" IsChecked="{Binding ProfileCrosshairPulseOnHit}" Foreground="#DDE1E8"/>
+                            <Border Height="1" Background="#2A2F38" Margin="0,4"/>
 
                             <Grid ColumnDefinitions="*,*">
                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="Colore modello 1" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableModelColors}" SelectedValue="{Binding ProfileModelColor1}" SelectedValueBinding="{Binding Value}" HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Name}"/>
-                                            </DataTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding Name}"/></DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                 </StackPanel>
@@ -307,11 +398,27 @@
                                     <TextBlock Text="Colore modello 2" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableModelColors}" SelectedValue="{Binding ProfileModelColor2}" SelectedValueBinding="{Binding Value}" HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Name}"/>
-                                            </DataTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding Name}"/></DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Height="1" Background="#2A2F38" Margin="0,4"/>
+
+                            <TextBlock Text="Impostazioni video" Foreground="#DDE1E8" FontSize="16" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,*,*">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="FOV (90-160)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding VideoFov}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <TextBlock Text="Anti-aliasing" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding AvailableAntiAliasingLevels}" SelectedItem="{Binding VideoAntiAliasing}" HorizontalAlignment="Stretch"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Luminosita' (gamma)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding VideoGamma}"/>
                                 </StackPanel>
                             </Grid>
 
