@@ -123,19 +123,40 @@ crash tecnici, mai CD key/password/dati sensibili).
 
 Richiede **.NET 8 SDK**.
 
+Modo consigliato (crea direttamente gli ZIP pronti da mandare, in `dist\`):
+
+```bat
+publish.bat        REM Windows: dist\Quake3InstaGibLauncher-win-x64.zip
+publish-mac.bat     REM macOS (compilabile anche da Windows): due ZIP, uno per Apple Silicon
+                     REM (osx-arm64) e uno per Intel (osx-x64), entrambi self-contained a
+                     REM file singolo come la build Windows
+```
+
+In alternativa, comando diretto per singola piattaforma:
+
 ```bash
 # Windows (self-contained, file singolo)
 dotnet publish src/Quake3InstaGibLauncher/Quake3InstaGibLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
-# macOS Apple Silicon
-dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-arm64 --self-contained true
+# macOS Apple Silicon (self-contained, file singolo)
+dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
-# macOS Intel
-dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-x64 --self-contained true
+# macOS Intel (self-contained, file singolo)
+dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-Le build pubblicate sono **self-contained**: non richiedono .NET installato sul PC di
-destinazione.
+Le build pubblicate sono **self-contained** e **a file singolo**: non richiedono .NET
+installato sul PC di destinazione, e il risultato è un solo eseguibile da lanciare più la
+cartella `Presets\` (sfondi/pulsanti/loghi predefiniti — resta fuori dal file singolo per un
+limite noto di .NET sui contenuti oltre ~2 MB).
+
+> **Primo avvio su Mac**: se compili la versione macOS da Windows (come questo script fa —
+> funziona, NuGet scarica i runtime pack necessari), lo ZIP risultante non porta con sé il "bit
+> eseguibile" Unix e l'app non è firmata/notarizzata Apple, quindi il destinatario deve fare
+> **una tantum**, dopo aver scompattato: `chmod +x Quake3InstaGibLauncher.Mac` e `xattr -cr .`
+> da Terminale, poi eventualmente confermare in Impostazioni di Sistema → Privacy e sicurezza →
+> "Apri comunque". Istruzioni passo-passo pronte per l'utente finale in
+> `packaging/macos/Avvia su Mac - LEGGIMI.txt` (`publish-mac.bat` la copia già dentro ogni ZIP).
 
 ## Struttura del codice
 
