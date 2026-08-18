@@ -21,11 +21,18 @@ PASSAGGIO UNA TANTUM (va fatto solo la prima volta):
    .app, non l'app stessa) dentro la finestra del Terminale: il percorso si
    scrive da solo. Premi invio.
 
-4. Copia e incolla questi due comandi, uno alla volta, premendo invio dopo
+4. Copia e incolla questi comandi, uno alla volta, premendo invio dopo
    ciascuno:
 
    chmod +x "Quake III InstaGib Launcher.app/Contents/MacOS/Quake3InstaGibLauncher.Mac"
    xattr -cr "Quake III InstaGib Launcher.app"
+   codesign --force --deep --sign - "Quake III InstaGib Launcher.app"
+
+   Il terzo comando (codesign) e' necessario sui Mac con chip Apple (M1/M2/M3/
+   M4/M5...): l'app e' stata compilata su Windows, quindi non ha la firma
+   "ad-hoc" che macOS richiede per eseguire qualunque programma su questi
+   chip. Il comando la aggiunge in locale, gratuitamente (non serve nessun
+   account sviluppatore Apple).
 
 5. Ora puoi trascinare "Quake III InstaGib Launcher.app" nella cartella
    Applicazioni (facoltativo ma consigliato) e fare doppio click per avviarlo,

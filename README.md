@@ -161,10 +161,15 @@ cartella con l'eseguibile e le librerie sciolti.
 > **Primo avvio su Mac**: se compili la versione macOS da Windows (come questo script fa —
 > funziona, NuGet scarica i runtime pack necessari), lo ZIP risultante non porta con sé il "bit
 > eseguibile" Unix e l'app non è firmata/notarizzata Apple (nessun account sviluppatore Apple a
-> pagamento dietro questo progetto amatoriale gratuito), quindi il destinatario deve fare **una
-> tantum**, dopo aver scompattato, due comandi da Terminale (`chmod +x` sull'eseguibile dentro il
-> bundle + `xattr -cr` sul bundle) prima che il doppio click funzioni, poi eventualmente
-> confermare in Impostazioni di Sistema → Privacy e sicurezza → "Apri comunque". Istruzioni
+> pagamento dietro questo progetto amatoriale gratuito). Su Mac con chip Apple (M1/M2/.../M5...)
+> serve anche una firma "ad-hoc" locale, che si può generare solo su un Mac vero (il tool
+> `codesign` non esiste su Windows) — senza, macOS rifiuta di avviare l'app con l'errore
+> "l'applicazione non è supportata sul Mac" (non è Gatekeeper: è un controllo più a basso livello,
+> specifico dei chip Apple Silicon, e persiste anche dopo aver tolto la quarantena). Il
+> destinatario deve fare **una tantum**, dopo aver scompattato, tre comandi da Terminale
+> (`chmod +x` sull'eseguibile dentro il bundle, `xattr -cr` sul bundle, `codesign --force --deep
+> --sign -` sul bundle) prima che il doppio click funzioni, poi eventualmente confermare in
+> Impostazioni di Sistema → Privacy e sicurezza → "Apri comunque". Istruzioni
 > passo-passo pronte per l'utente finale in `packaging/macos/Avvia su Mac - LEGGIMI.txt`
 > (`publish-mac.bat` la copia già dentro ogni ZIP).
 
