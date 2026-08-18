@@ -123,13 +123,29 @@ crash tecnici, mai CD key/password/dati sensibili).
 
 Richiede **.NET 8 SDK**.
 
-Modo consigliato (crea direttamente gli ZIP pronti da mandare, in `dist\`):
+### Modo consigliato per distribuire una build a qualcuno: GitHub Actions
+
+`.github/workflows/release.yml` compila Windows su una macchina Windows reale e **macOS su una
+macchina macOS reale** (runner gratuiti forniti da GitHub per repository come questo), poi
+pubblica i tre ZIP sulla pagina Release del repository. Compilare la versione Mac su un Mac
+vero (invece che cross-compilarla da Windows) significa che l'app riceve la firma "ad-hoc"
+richiesta dai chip Apple Silicon **durante la build stessa** — chi scarica lo ZIP dalla Release
+fa doppio click e via, al massimo un clic di conferma sicurezza standard di macOS (vedi nota più
+sotto), senza toccare il Terminale.
+
+Si avvia da solo pushando un tag `vX.Y.Z`, oppure a mano dalla scheda **Actions** del repository
+su GitHub (pulsante "Run workflow", specificando la versione) se vuoi rigenerare gli allegati di
+una release già esistente senza creare un nuovo tag.
+
+### Compilazione/test rapido in locale
+
+Utile per provare una modifica al volo, **non per mandare il file a qualcuno** (la build Mac
+prodotta così non è firmata — vedi nota sotto):
 
 ```bat
 publish.bat        REM Windows: dist\Quake3InstaGibLauncher-win-x64.zip
-publish-mac.bat     REM macOS (compilabile anche da Windows): due ZIP, uno per Apple Silicon
-                     REM (osx-arm64) e uno per Intel (osx-x64), entrambi self-contained a
-                     REM file singolo come la build Windows
+publish-mac.bat     REM macOS (compilabile anche da Windows, cross-target): due ZIP, uno per
+                     REM Apple Silicon (osx-arm64) e uno per Intel (osx-x64)
 ```
 
 In alternativa, comando diretto per singola piattaforma:
