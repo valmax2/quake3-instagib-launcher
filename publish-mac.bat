@@ -60,7 +60,7 @@ for %%R in (osx-arm64 osx-x64) do (
     powershell -NoProfile -Command "(Get-Content 'packaging\macos\Info.plist.template') -replace '__VERSION__', '%VERSION%' | Set-Content -Encoding UTF8 '!APPDIR!\Contents\Info.plist'"
     if errorlevel 1 goto :error
 
-    echo === Copia README e istruzioni primo avvio (accanto all'app, non dentro) ===
+    echo === Copia README e istruzioni primo avvio - accanto all'app, non dentro ===
     copy /y "README.md" "!STAGEDIR!\README.md" >nul
     copy /y "packaging\macos\Avvia su Mac - LEGGIMI.txt" "!STAGEDIR!\Avvia su Mac - LEGGIMI.txt" >nul
 
