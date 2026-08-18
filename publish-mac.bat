@@ -1,18 +1,28 @@
 @echo off
 REM ============================================================================
 REM  Quake III InstaGib Launcher - publish-mac.bat
+REM
+REM  *** PER DISTRIBUIRE L'APP A QUALCUNO, USA INVECE LA RELEASE UFFICIALE SU
+REM  *** GITHUB (.github/workflows/release.yml, scheda Actions del repo): quella
+REM  *** build viene compilata E FIRMATA su un Mac vero, chi la scarica fa solo
+REM  *** doppio click (con al massimo un clic di conferma sicurezza standard),
+REM  *** senza toccare il Terminale. Usa questo script SOLO per test rapidi in
+REM  *** locale.
+REM
 REM  Pubblica le versioni macOS (Apple Silicon e Intel) self-contained a file
 REM  singolo, le impacchetta in un vero bundle "Quake III InstaGib Launcher.app"
-REM  (Contents/MacOS + Info.plist, come una normale app Mac) e crea due ZIP
-REM  pronti da distribuire in dist\.
+REM  (Contents/MacOS + Info.plist, come una normale app Mac) e crea due ZIP in
+REM  dist\.
 REM
 REM  NOTA IMPORTANTE: questo script compila DA WINDOWS per macOS (funziona,
 REM  NuGet scarica i runtime pack necessari), ma Windows non ha il concetto di
-REM  "bit eseguibile" Unix e l'app non e' firmata/notarizzata Apple (nessun
+REM  "bit eseguibile" Unix, l'app non e' firmata/notarizzata Apple (nessun
 REM  account sviluppatore a pagamento dietro questo progetto amatoriale
-REM  gratuito): il destinatario deve comunque fare un passaggio una tantum al
-REM  primo avvio. Nello ZIP trovi "Avvia su Mac - LEGGIMI.txt" con le
-REM  istruzioni pronte da fargli leggere.
+REM  gratuito) e su Apple Silicon manca anche la firma "ad-hoc" (il tool
+REM  "codesign" esiste solo su macOS): il destinatario deve fare 3 comandi da
+REM  Terminale una tantum al primo avvio. Nello ZIP trovi
+REM  "Avvia su Mac (build locale da Windows) - LEGGIMI.txt" con le istruzioni
+REM  pronte da fargli leggere.
 REM ============================================================================
 setlocal enabledelayedexpansion
 
@@ -62,7 +72,7 @@ for %%R in (osx-arm64 osx-x64) do (
 
     echo === Copia README e istruzioni primo avvio - accanto all'app, non dentro ===
     copy /y "README.md" "!STAGEDIR!\README.md" >nul
-    copy /y "packaging\macos\Avvia su Mac - LEGGIMI.txt" "!STAGEDIR!\Avvia su Mac - LEGGIMI.txt" >nul
+    copy /y "packaging\macos\Avvia su Mac (build locale da Windows) - LEGGIMI.txt" "!STAGEDIR!\Avvia su Mac - LEGGIMI.txt" >nul
 
     echo === Creazione archivio ZIP ===
     powershell -NoProfile -Command "Compress-Archive -Path '!STAGEDIR!\*' -DestinationPath '!ZIPNAME!' -Force"
@@ -77,8 +87,11 @@ echo Archivi ZIP pronti in dist\:
 echo   - Quake3InstaGibLauncher-macOS-osx-arm64.zip  (Mac con chip Apple: M1/M2/M3/M4/M5...)
 echo   - Quake3InstaGibLauncher-macOS-osx-x64.zip    (Mac Intel, piu' vecchi)
 echo Ogni ZIP contiene "%APP_NAME%" (bundle .app, un'unica icona) + README + istruzioni.
-echo Manda al tuo amico SOLO lo ZIP giusto per il suo Mac (chip Apple = arm64, la stragrande
-echo maggioranza dei Mac venduti dal 2020 in poi; Intel solo se piu' vecchio).
+echo.
+echo PROMEMORIA: questa build NON e' firmata (compilata da Windows) - chi la riceve deve
+echo seguire i 3 comandi da Terminale nel LEGGIMI. Per mandare qualcosa a qualcuno senza
+echo fargli aprire il Terminale, usa invece la Release ufficiale su GitHub (build compilata
+echo e firmata su un Mac vero da .github\workflows\release.yml, scheda Actions del repo).
 goto :eof
 
 :error

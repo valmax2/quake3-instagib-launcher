@@ -1,0 +1,49 @@
+Quake III InstaGib Launcher - primo avvio su Mac
+=================================================
+(build compilata in locale su Windows con publish-mac.bat - non tramite GitHub
+Actions. Se puoi, preferisci sempre gli ZIP della pagina Release ufficiale su
+GitHub: sono firmati correttamente su un Mac vero e non richiedono nessuno dei
+passaggi da Terminale qui sotto.)
+
+Questa app e' stata compilata su Windows per Mac e non e' firmata/notarizzata
+da Apple (nessun costo di sviluppatore Apple sostenuto per un progetto amatoriale
+gratuito): la prima volta il Mac blocca l'avvio, come fa con qualunque app
+scaricata da fuori l'App Store e non firmata. E' un controllo di sicurezza
+standard di macOS, non un problema di virus.
+
+PASSAGGIO UNA TANTUM (va fatto solo la prima volta):
+
+1. Scompatta lo ZIP (doppio click, o se non si apre da solo: tasto destro >
+   Apri con > Archive Utility). Otterrai una cartella con dentro
+   "Quake III InstaGib Launcher.app" (l'icona dell'app) + questo file.
+
+2. Apri l'app "Terminale" (Launchpad > Altro > Terminale, oppure Cmd+Spazio e
+   scrivi "Terminale").
+
+3. Nella finestra del Terminale scrivi "cd " (con lo spazio dopo, senza premere
+   invio), poi trascina la CARTELLA scompattata (quella che contiene il file
+   .app, non l'app stessa) dentro la finestra del Terminale: il percorso si
+   scrive da solo. Premi invio.
+
+4. Copia e incolla questi comandi, uno alla volta, premendo invio dopo
+   ciascuno:
+
+   chmod +x "Quake III InstaGib Launcher.app/Contents/MacOS/Quake3InstaGibLauncher.Mac"
+   xattr -cr "Quake III InstaGib Launcher.app"
+   codesign --force --deep --sign - "Quake III InstaGib Launcher.app"
+
+   Il terzo comando (codesign) e' necessario sui Mac con chip Apple (M1/M2/M3/
+   M4/M5...): l'app e' stata compilata su Windows, quindi non ha la firma
+   "ad-hoc" che macOS richiede per eseguire qualunque programma su questi
+   chip. Il comando la aggiunge in locale, gratuitamente (non serve nessun
+   account sviluppatore Apple).
+
+5. Ora puoi trascinare "Quake III InstaGib Launcher.app" nella cartella
+   Applicazioni (facoltativo ma consigliato) e fare doppio click per avviarlo,
+   come qualunque altra app. Se macOS mostra ancora un avviso, vai in
+   Impostazioni di Sistema > Privacy e sicurezza, scorri fino in fondo e
+   clicca "Apri comunque" accanto al nome dell'app, poi conferma.
+
+Dalla volta successiva basta il doppio click, come qualunque altra app.
+
+Se qualcosa non funziona, scrivi a: vstudioapps@gmail.com
