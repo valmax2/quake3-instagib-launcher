@@ -20,6 +20,17 @@
     <RuntimeIdentifiers>osx-arm64;osx-x64</RuntimeIdentifiers>
     <SelfContained>true</SelfContained>
 
+    <!-- PublishSingleFile=true: senza questo flag "dotnet publish" per macOS produceva
+         l'eseguibile PIU' decine di DLL/librerie native sciolte (Avalonia, SkiaSharp, ICU,
+         runtime .NET...) invece di un solo file da lanciare, a differenza della build Windows
+         che lo aveva gia' (vedi Quake3InstaGibLauncher.csproj). Bug reale: un utente ha
+         confermato di aver ricevuto "una marea di cartelle e file" invece dell'eseguibile
+         singolo. Presets/ resta comunque una cartella a parte (vedi ExcludeFromSingleFile
+         qui sotto), ma tutto il resto ora e' incluso in un unico binario. -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+
     <!-- Richiesto da MacImageConversionService per copiare pixel TGA decodificati con Pfim
          dentro un SKBitmap tramite puntatore, come da esempio ufficiale Pfim+SkiaSharp. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

@@ -1,0 +1,35 @@
+Quake III InstaGib Launcher - primo avvio su Mac
+=================================================
+
+Questa app e' stata compilata su Windows per Mac e non e' firmata/notarizzata
+da Apple (nessun costo di sviluppatore Apple sostenuto per un progetto amatoriale
+gratuito): la prima volta il Mac blocca l'avvio con un doppio click, come fa con
+qualunque app scaricata da fuori l'App Store e non firmata. E' un controllo di
+sicurezza standard di macOS (Gatekeeper), non un problema di virus.
+
+PASSAGGIO UNA TANTUM (va fatto solo la prima volta):
+
+1. Scompatta lo ZIP (doppio click, o se non si apre da solo: tasto destro >
+   Apri con > Archive Utility).
+
+2. Apri l'app "Terminale" (Launchpad > Altro > Terminale, oppure Cmd+Spazio e
+   scrivi "Terminale").
+
+3. Nella finestra del Terminale scrivi "cd " (con lo spazio dopo, senza premere
+   invio), poi trascina la cartella scompattata dentro la finestra del
+   Terminale: il percorso si scrive da solo. Premi invio.
+
+4. Copia e incolla questi due comandi, uno alla volta, premendo invio dopo
+   ciascuno:
+
+   chmod +x Quake3InstaGibLauncher.Mac
+   xattr -cr .
+
+5. Ora fai doppio click su "Quake3InstaGibLauncher.Mac" nel Finder per avviare
+   il launcher. Se macOS mostra ancora un avviso, vai in Impostazioni di
+   Sistema > Privacy e sicurezza, scorri fino in fondo e clicca "Apri comunque"
+   accanto al nome dell'app, poi conferma.
+
+Dalla volta successiva basta il doppio click, come qualunque altra app.
+
+Se qualcosa non funziona, scrivi a: vstudioapps@gmail.com
