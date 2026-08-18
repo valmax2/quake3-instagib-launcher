@@ -31,6 +31,10 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 
+    <!-- Niente .pdb nell'output pubblicato: sono simboli di debug, inutili e confusi per
+         l'utente finale che riceve lo ZIP (non servono per eseguire l'app). -->
+    <DebugType>none</DebugType>
+
     <!-- Richiesto da MacImageConversionService per copiare pixel TGA decodificati con Pfim
          dentro un SKBitmap tramite puntatore, come da esempio ufficiale Pfim+SkiaSharp. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
