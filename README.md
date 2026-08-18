@@ -146,17 +146,27 @@ dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj 
 ```
 
 Le build pubblicate sono **self-contained** e **a file singolo**: non richiedono .NET
-installato sul PC di destinazione, e il risultato è un solo eseguibile da lanciare più la
-cartella `Presets\` (sfondi/pulsanti/loghi predefiniti — resta fuori dal file singolo per un
-limite noto di .NET sui contenuti oltre ~2 MB).
+installato sul PC di destinazione. Il risultato del comando `dotnet publish` diretto è un solo
+eseguibile più la cartella `Presets\` (sfondi/pulsanti/loghi predefiniti — resta fuori dal file
+singolo per un limite noto di .NET sui contenuti oltre ~2 MB) e, solo su macOS, un pugno di
+librerie native (`.dylib` di Avalonia/SkiaSharp — non impacchettabili nel file singolo, limite
+noto di .NET con questo genere di dipendenze).
+
+`publish-mac.bat` va oltre il semplice `dotnet publish`: assembla il tutto in un vero bundle
+**`Quake III InstaGib Launcher.app`** (struttura `Contents/MacOS/` + `Contents/Info.plist`, con
+`README.md` e le istruzioni di primo avvio accanto ma fuori dal bundle) — così chi lo riceve
+vede una singola icona da trascinare in Applicazioni, come una normale app Mac, invece della
+cartella con l'eseguibile e le librerie sciolti.
 
 > **Primo avvio su Mac**: se compili la versione macOS da Windows (come questo script fa —
 > funziona, NuGet scarica i runtime pack necessari), lo ZIP risultante non porta con sé il "bit
-> eseguibile" Unix e l'app non è firmata/notarizzata Apple, quindi il destinatario deve fare
-> **una tantum**, dopo aver scompattato: `chmod +x Quake3InstaGibLauncher.Mac` e `xattr -cr .`
-> da Terminale, poi eventualmente confermare in Impostazioni di Sistema → Privacy e sicurezza →
-> "Apri comunque". Istruzioni passo-passo pronte per l'utente finale in
-> `packaging/macos/Avvia su Mac - LEGGIMI.txt` (`publish-mac.bat` la copia già dentro ogni ZIP).
+> eseguibile" Unix e l'app non è firmata/notarizzata Apple (nessun account sviluppatore Apple a
+> pagamento dietro questo progetto amatoriale gratuito), quindi il destinatario deve fare **una
+> tantum**, dopo aver scompattato, due comandi da Terminale (`chmod +x` sull'eseguibile dentro il
+> bundle + `xattr -cr` sul bundle) prima che il doppio click funzioni, poi eventualmente
+> confermare in Impostazioni di Sistema → Privacy e sicurezza → "Apri comunque". Istruzioni
+> passo-passo pronte per l'utente finale in `packaging/macos/Avvia su Mac - LEGGIMI.txt`
+> (`publish-mac.bat` la copia già dentro ogni ZIP).
 
 ## Struttura del codice
 
