@@ -321,6 +321,81 @@ public static class CommandBuilder
         args.Add(value);
     }
 
+    /// <summary>Cvar che DEVONO restare sulla riga di comando reale (mai spostabili in un file
+    /// .cfg): decidono il percorso di ricerca file del motore (quale "mod" e' attiva), quindi
+    /// devono gia' essere applicate PRIMA che il motore possa anche solo trovare un file .cfg da
+    /// eseguire con "+exec".</summary>
+    private static readonly HashSet<string> CommandLineOnlyCvars =
+        new(StringComparer.OrdinalIgnoreCase) { "fs_game", "fs_basegame" };
+
+    /// <summary>
+    /// Consolida la lunga lista di argomenti "+set"/"+exec"/"+map"/"+connect" gia' costruita da
+    /// BuildLocalArguments/BuildMultiplayerArguments/BuildJoinArguments in un file .cfg da eseguire
+    /// con un SOLO "+exec" finale, invece di passare decine di argomenti separati sulla riga di
+    /// comando.
+    ///
+    /// PERCHE' (bug reale osservato, non teorico): il motore ioquake3 - retaggio del Quake III
+    /// originale del 1999 - ha un limite interno al numero di argomenti "+" accettati insieme
+    /// all'avvio. Con una configurazione completa (rotazione di piu' mappe, nome giocatore e
+    /// mirino personalizzati, tasti configurati) questo launcher supera facilmente quel limite:
+    /// gli argomenti in eccesso vengono silenziosamente scartati dal motore, tipicamente proprio
+    /// il "+exec"/"+map" finale che avvia davvero la partita. Risultato osservato con un utente
+    /// reale: il gioco si avvia, inizializza tutto (audio, rete, interfaccia) ma resta fermo al
+    /// menu principale, senza alcun errore visibile, perche' il comando che avrebbe dovuto
+    /// caricare il server/la mappa non arriva mai al motore. Consolidare tutto in un unico file
+    /// .cfg (che non ha questo limite) elimina il problema alla radice, qualunque sia il numero di
+    /// impostazioni scelte dall'utente.
+    ///
+    /// fs_game/fs_basegame restano SEMPRE sulla riga di comando: decidono il percorso di ricerca
+    /// file del motore, quindi devono essere gia' attivi prima che il motore possa anche solo
+    /// trovare il file .cfg da eseguire.
+    /// </summary>
+    public static (List<string> CommandLineArgs, string CfgContent) ConsolidateForStartupCfg(IReadOnlyList<string> args)
+    {
+        var commandLine = new List<string>();
+        var cfgLines = new List<string>();
+
+        var i = 0;
+        while (i < args.Count)
+        {
+            var token = args[i];
+            if (token == "+set" && i + 2 < args.Count)
+            {
+                var cvar = args[i + 1];
+                var value = args[i + 2];
+                if (CommandLineOnlyCvars.Contains(cvar))
+                    commandLine.AddRange(new[] { "+set", cvar, value });
+                else
+                    cfgLines.Add($"set {cvar} \"{value}\"");
+                i += 3;
+            }
+            else if (token == "+exec" && i + 1 < args.Count)
+            {
+                cfgLines.Add($"exec {args[i + 1]}");
+                i += 2;
+            }
+            else if (token == "+map" && i + 1 < args.Count)
+            {
+                cfgLines.Add($"map {args[i + 1]}");
+                i += 2;
+            }
+            else if (token == "+connect" && i + 1 < args.Count)
+            {
+                cfgLines.Add($"connect {args[i + 1]}");
+                i += 2;
+            }
+            else
+            {
+                // Comando non riconosciuto: lasciato sulla riga di comando cosi' com'e', per
+                // sicurezza (non dovrebbe capitare con gli argomenti generati da questa classe).
+                commandLine.Add(token);
+                i += 1;
+            }
+        }
+
+        return (commandLine, cfgLines.Count > 0 ? string.Join("\n", cfgLines) + "\n" : string.Empty);
+    }
+
     private static int ClampNonNegative(int value) => Math.Max(0, value);
 
     /// <summary>Rappresentazione testuale del comando SOLO per la visualizzazione nella sezione avanzata
