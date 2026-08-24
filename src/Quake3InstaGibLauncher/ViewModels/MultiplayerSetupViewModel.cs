@@ -22,6 +22,7 @@ public partial class MultiplayerSetupViewModel : ObservableObject
     private readonly Action<MapCardViewModel> _onMapUsed;
     private readonly LaunchService _launchService;
     private readonly RotationCfgService _rotationCfgService;
+    private readonly StartupCfgService _startupCfgService = new();
     private readonly Quake3ServerBrowser _serverBrowser = new();
     private readonly ServerInviteService _inviteService = new();
     private readonly KeyBindingCfgService _keyBindingCfgService = new();
@@ -274,8 +275,21 @@ public partial class MultiplayerSetupViewModel : ObservableObject
                 var bindingsFileName = _keyBindingCfgService.WriteBindingsCfg(targetDir, _settings.KeyBindings);
                 if (bindingsFileName is not null) { args.Add("+exec"); args.Add(bindingsFileName); }
             }
+
+            // Consolida tutti i "+set"/"+exec" in un unico file .cfg: vedi
+            // CommandBuilder.ConsolidateForStartupCfg per il perche' (limite del motore sul numero
+            // di argomenti "+" accettati insieme, superato facilmente con una configurazione
+            // completa e causa reale del ritorno silenzioso al menu principale).
+            var (finalArgs, startupCfgContent) = CommandBuilder.ConsolidateForStartupCfg(args);
+            if (!string.IsNullOrEmpty(startupCfgContent))
+            {
+                var startupResult = _startupCfgService.WriteStartupCfg(targetDir, startupCfgContent);
+                finalArgs.Add("+exec");
+                finalArgs.Add(startupResult.FileNameForExec);
+            }
+
             var summary = BuildSummary(options, cfgFullPath);
-            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, args);
+            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, finalArgs);
 
             _onDiagnosticsReport(advanced, cfgFullPath);
 
@@ -286,7 +300,7 @@ public partial class MultiplayerSetupViewModel : ObservableObject
                 return;
             }
 
-            var outcome = _launchService.Launch(paths.ExecutablePath, paths.RootPath, args);
+            var outcome = _launchService.Launch(paths.ExecutablePath, paths.RootPath, finalArgs);
             _onLaunched(outcome);
 
             if (outcome.Success)
@@ -579,6 +593,16 @@ public partial class MultiplayerSetupViewModel : ObservableObject
                 if (bindingsFileName is not null) { args.Add("+exec"); args.Add(bindingsFileName); }
             }
 
+            // Vedi CommandBuilder.ConsolidateForStartupCfg: stesso consolidamento usato per
+            // Ospita, per non superare il limite del motore sul numero di argomenti "+".
+            var (finalArgs, startupCfgContent) = CommandBuilder.ConsolidateForStartupCfg(args);
+            if (!string.IsNullOrEmpty(startupCfgContent))
+            {
+                var startupResult = _startupCfgService.WriteStartupCfg(paths.BaseQ3Path, startupCfgContent);
+                finalArgs.Add("+exec");
+                finalArgs.Add(startupResult.FileNameForExec);
+            }
+
             var modLabel = string.IsNullOrWhiteSpace(server.ModName) ? "baseq3 (nessuna mod dichiarata)" : server.ModName;
             var summary =
                 $"Connessione al server esistente\n" +
@@ -587,7 +611,7 @@ public partial class MultiplayerSetupViewModel : ObservableObject
                 (server.NeedsPassword ? "Il server richiede una password.\n" : "") +
                 $"Mod del server: {modLabel} (il client si adatta automaticamente in connessione)";
 
-            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, args);
+            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, finalArgs);
             _onDiagnosticsReport(advanced, null);
 
             var confirmed = await _confirmLaunch(summary, advanced);
@@ -597,7 +621,7 @@ public partial class MultiplayerSetupViewModel : ObservableObject
                 return;
             }
 
-            var outcome = _launchService.Launch(paths.ExecutablePath, paths.RootPath, args);
+            var outcome = _launchService.Launch(paths.ExecutablePath, paths.RootPath, finalArgs);
             _onLaunched(outcome);
             SearchStatusMessage = outcome.Success
                 ? $"Connessione avviata verso {server.EndPointText}."

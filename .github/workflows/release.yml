@@ -1,0 +1,135 @@
+name: Build & Release
+
+# Compila Windows su una macchina Windows reale e macOS su una macchina macOS reale
+# (runner ospitati da GitHub), cosi' la build Mac ottiene la firma "ad-hoc" richiesta
+# dai chip Apple Silicon direttamente durante la pubblicazione (codesign esiste solo
+# su macOS: pubblicare da Windows produce un'app non firmata che i Mac M1/M2/.../M5
+# rifiutano di avviare). Nessun account sviluppatore Apple richiesto: la firma
+# ad-hoc e' gratuita, basta avere macOS a disposizione - cosa che i runner di
+# GitHub forniscono gratis per repository come questo.
+#
+# Si avvia da solo quando pushi un tag "vX.Y.Z", oppure a mano dalla scheda Actions
+# del repository (pulsante "Run workflow"), specificando la versione.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versione da pubblicare, es. 1.5.2 (solo per lancio manuale senza un tag)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+    steps:
+      - id: resolve
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "::error::Specifica 'version' quando lanci il workflow a mano senza un tag."
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+  build-windows:
+    needs: prepare
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Pubblicazione self-contained win-x64
+        run: >
+          dotnet publish src/Quake3InstaGibLauncher/Quake3InstaGibLauncher.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish-win
+      - name: Copia README
+        run: Copy-Item README.md publish-win\README.md
+      - name: Crea ZIP
+        run: Compress-Archive -Path publish-win\* -DestinationPath Quake3InstaGibLauncher-win-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: Quake3InstaGibLauncher-win-x64.zip
+
+  build-macos:
+    needs: prepare
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - rid: osx-arm64
+            short: arm64
+          - rid: osx-x64
+            short: x64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Pubblicazione self-contained ${{ matrix.rid }}
+        run: >
+          dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj
+          -c Release -r ${{ matrix.rid }} --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish-${{ matrix.rid }}
+      - name: Assembla bundle .app
+        run: |
+          set -euo pipefail
+          APPDIR="stage-${{ matrix.rid }}/Quake III InstaGib Launcher.app"
+          mkdir -p "$APPDIR/Contents/MacOS"
+          cp -R "publish-${{ matrix.rid }}/." "$APPDIR/Contents/MacOS/"
+          chmod +x "$APPDIR/Contents/MacOS/Quake3InstaGibLauncher.Mac"
+          sed "s/__VERSION__/${{ needs.prepare.outputs.version }}/g" \
+            packaging/macos/Info.plist.template > "$APPDIR/Contents/Info.plist"
+          cp README.md "stage-${{ matrix.rid }}/README.md"
+          cp "packaging/macos/Avvia su Mac - LEGGIMI.txt" "stage-${{ matrix.rid }}/Avvia su Mac - LEGGIMI.txt"
+      - name: Firma ad-hoc (obbligatoria su Apple Silicon)
+        run: codesign --force --deep --sign - "stage-${{ matrix.rid }}/Quake III InstaGib Launcher.app"
+      - name: Verifica la firma
+        run: codesign --verify --verbose "stage-${{ matrix.rid }}/Quake III InstaGib Launcher.app"
+      - name: Crea ZIP
+        run: |
+          cd "stage-${{ matrix.rid }}"
+          zip -r -y "../Quake3InstaGibLauncher-macos-${{ matrix.short }}.zip" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.rid }}-build
+          path: Quake3InstaGibLauncher-macos-${{ matrix.short }}.zip
+
+  release:
+    needs: [prepare, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Pubblica o aggiorna la Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$TAG" artifacts/*.zip --repo "${{ github.repository }}" --clobber
+          else
+            gh release create "$TAG" artifacts/*.zip --repo "${{ github.repository }}" \
+              --title "$TAG" --generate-notes
+          fi

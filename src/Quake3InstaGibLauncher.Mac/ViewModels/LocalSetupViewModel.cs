@@ -19,6 +19,7 @@ public partial class LocalSetupViewModel : ObservableObject
     private readonly Action<MapCardViewModel> _onMapUsed;
     private readonly LaunchService _launchService;
     private readonly RotationCfgService _rotationCfgService;
+    private readonly StartupCfgService _startupCfgService = new();
     private readonly KeyBindingCfgService _keyBindingCfgService = new();
     private readonly MacAppSettings _settings;
 
@@ -132,8 +133,20 @@ public partial class LocalSetupViewModel : ObservableObject
                 if (bindingsFileName is not null) { args.Add("+exec"); args.Add(bindingsFileName); }
             }
 
+            // Consolida tutti i "+set"/"+exec" in un unico file .cfg: vedi
+            // CommandBuilder.ConsolidateForStartupCfg per il perche' (limite del motore sul numero
+            // di argomenti "+" accettati insieme, superato facilmente con una configurazione
+            // completa e causa reale del ritorno silenzioso al menu principale).
+            var (finalArgs, startupCfgContent) = CommandBuilder.ConsolidateForStartupCfg(args);
+            if (!string.IsNullOrEmpty(startupCfgContent))
+            {
+                var startupResult = _startupCfgService.WriteStartupCfg(targetDir, startupCfgContent);
+                finalArgs.Add("+exec");
+                finalArgs.Add(startupResult.FileNameForExec);
+            }
+
             var summary = BuildSummary(options, cfgFullPath);
-            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, args);
+            var advanced = CommandBuilder.ToDisplayCommand(paths.ExecutablePath, finalArgs);
 
             _onDiagnosticsReport(advanced, cfgFullPath);
 
@@ -144,7 +157,7 @@ public partial class LocalSetupViewModel : ObservableObject
                 return;
             }
 
-            var outcome = _launchService.Launch(paths.ExecutablePath, paths.WorkingDirectory, args);
+            var outcome = _launchService.Launch(paths.ExecutablePath, paths.WorkingDirectory, finalArgs);
             _onLaunched(outcome);
 
             if (outcome.Success)

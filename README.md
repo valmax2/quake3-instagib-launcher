@@ -123,19 +123,71 @@ crash tecnici, mai CD key/password/dati sensibili).
 
 Richiede **.NET 8 SDK**.
 
+### Modo consigliato per distribuire una build a qualcuno: GitHub Actions
+
+`.github/workflows/release.yml` compila Windows su una macchina Windows reale e **macOS su una
+macchina macOS reale** (runner gratuiti forniti da GitHub per repository come questo), poi
+pubblica i tre ZIP sulla pagina Release del repository. Compilare la versione Mac su un Mac
+vero (invece che cross-compilarla da Windows) significa che l'app riceve la firma "ad-hoc"
+richiesta dai chip Apple Silicon **durante la build stessa** — chi scarica lo ZIP dalla Release
+fa doppio click e via, al massimo un clic di conferma sicurezza standard di macOS (vedi nota più
+sotto), senza toccare il Terminale.
+
+Si avvia da solo pushando un tag `vX.Y.Z`, oppure a mano dalla scheda **Actions** del repository
+su GitHub (pulsante "Run workflow", specificando la versione) se vuoi rigenerare gli allegati di
+una release già esistente senza creare un nuovo tag.
+
+### Compilazione/test rapido in locale
+
+Utile per provare una modifica al volo, **non per mandare il file a qualcuno** (la build Mac
+prodotta così non è firmata — vedi nota sotto):
+
+```bat
+publish.bat        REM Windows: dist\Quake3InstaGibLauncher-win-x64.zip
+publish-mac.bat     REM macOS (compilabile anche da Windows, cross-target): due ZIP, uno per
+                     REM Apple Silicon (osx-arm64) e uno per Intel (osx-x64)
+```
+
+In alternativa, comando diretto per singola piattaforma:
+
 ```bash
 # Windows (self-contained, file singolo)
 dotnet publish src/Quake3InstaGibLauncher/Quake3InstaGibLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
-# macOS Apple Silicon
-dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-arm64 --self-contained true
+# macOS Apple Silicon (self-contained, file singolo)
+dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
-# macOS Intel
-dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-x64 --self-contained true
+# macOS Intel (self-contained, file singolo)
+dotnet publish src/Quake3InstaGibLauncher.Mac/Quake3InstaGibLauncher.Mac.csproj -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-Le build pubblicate sono **self-contained**: non richiedono .NET installato sul PC di
-destinazione.
+Le build pubblicate sono **self-contained** e **a file singolo**: non richiedono .NET
+installato sul PC di destinazione. Il risultato del comando `dotnet publish` diretto è un solo
+eseguibile più la cartella `Presets\` (sfondi/pulsanti/loghi predefiniti — resta fuori dal file
+singolo per un limite noto di .NET sui contenuti oltre ~2 MB) e, solo su macOS, un pugno di
+librerie native (`.dylib` di Avalonia/SkiaSharp — non impacchettabili nel file singolo, limite
+noto di .NET con questo genere di dipendenze).
+
+`publish-mac.bat` va oltre il semplice `dotnet publish`: assembla il tutto in un vero bundle
+**`Quake III InstaGib Launcher.app`** (struttura `Contents/MacOS/` + `Contents/Info.plist`, con
+`README.md` e le istruzioni di primo avvio accanto ma fuori dal bundle) — così chi lo riceve
+vede una singola icona da trascinare in Applicazioni, come una normale app Mac, invece della
+cartella con l'eseguibile e le librerie sciolti.
+
+> **Primo avvio su Mac**: se compili la versione macOS da Windows (come questo script fa —
+> funziona, NuGet scarica i runtime pack necessari), lo ZIP risultante non porta con sé il "bit
+> eseguibile" Unix e l'app non è firmata/notarizzata Apple (nessun account sviluppatore Apple a
+> pagamento dietro questo progetto amatoriale gratuito). Su Mac con chip Apple (M1/M2/.../M5...)
+> serve anche una firma "ad-hoc" locale, che si può generare solo su un Mac vero (il tool
+> `codesign` non esiste su Windows) — senza, macOS rifiuta di avviare l'app con l'errore
+> "l'applicazione non è supportata sul Mac" (non è Gatekeeper: è un controllo più a basso livello,
+> specifico dei chip Apple Silicon, e persiste anche dopo aver tolto la quarantena). Il
+> destinatario deve fare **una tantum**, dopo aver scompattato, tre comandi da Terminale
+> (`chmod +x` sull'eseguibile dentro il bundle, `xattr -cr` sul bundle, `codesign --force --deep
+> --sign -` sul bundle) prima che il doppio click funzioni, poi eventualmente confermare in
+> Impostazioni di Sistema → Privacy e sicurezza → "Apri comunque". Istruzioni
+> passo-passo pronte per l'utente finale in `packaging/macos/Avvia su Mac - LEGGIMI.txt`
+> (`publish-mac.bat` la copia già dentro ogni ZIP).
 
 ## Struttura del codice
 

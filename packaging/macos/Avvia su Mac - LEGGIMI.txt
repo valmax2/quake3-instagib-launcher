@@ -1,0 +1,23 @@
+Quake III InstaGib Launcher - primo avvio su Mac
+=================================================
+
+Questa app non e' distribuita tramite l'App Store, quindi non ha la firma a
+pagamento di uno "sviluppatore Apple verificato" (progetto amatoriale e
+gratuito - nessun costo del genere sostenuto). Al primissimo avvio macOS
+mostra un avviso di sicurezza standard: e' normale, capita con qualunque app
+gratuita scaricata fuori dall'App Store, non e' un problema di virus.
+
+PASSAGGIO UNA TANTUM (va fatto solo la prima volta):
+
+1. Scompatta lo ZIP (doppio click, o se non si apre da solo: tasto destro >
+   Apri con > Archive Utility).
+
+2. Fai doppio click su "Quake III InstaGib Launcher.app". Se compare un
+   avviso che blocca l'avvio, vai in Impostazioni di Sistema > Privacy e
+   sicurezza, scorri fino in fondo: troverai una riga con il nome dell'app e
+   un pulsante "Apri comunque". Clicca, conferma con la tua password/Touch ID
+   se richiesto, poi riprova ad aprire l'app.
+
+Dalla volta successiva basta il doppio click, come qualunque altra app.
+
+Se qualcosa non funziona, scrivi a: vstudioapps@gmail.com
