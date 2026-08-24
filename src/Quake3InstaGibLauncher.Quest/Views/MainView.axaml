@@ -10,19 +10,18 @@
         <conv:GameTypeDisplayConverter x:Key="GameTypeDisplay"/>
 
         <DataTemplate x:Key="ServerRowTemplate" x:DataType="models:ServerInfo">
-            <Border Background="#1D2128" BorderBrush="#2A2F38" BorderThickness="1" CornerRadius="8" Margin="6" Padding="16">
+            <Border Background="{StaticResource CardBrush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" CornerRadius="8" Margin="6" Padding="16">
                 <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding HostName}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="{Binding MapName}" FontSize="13" Foreground="#8A8F98"/>
+                        <TextBlock Text="{Binding HostName}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding MapName}" FontSize="13" Foreground="{StaticResource TextMutedBrush}"/>
                     </StackPanel>
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="12,0" FontSize="16" Foreground="#8FD19E">
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="12,0" FontSize="16" Foreground="{StaticResource PositiveBrush}">
                         <Run Text="{Binding Players}"/><Run Text="/"/><Run Text="{Binding MaxPlayers}"/>
                     </TextBlock>
-                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="13" Foreground="#8A8F98"
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="13" Foreground="{StaticResource TextMutedBrush}"
                                Text="{Binding EndPointText}"/>
-                    <Button Grid.Column="3" Content="GIOCA" Padding="20,12" FontWeight="Bold"
-                            Background="#E8B923" Foreground="#1A1400"
+                    <Button Grid.Column="3" Classes="accent-action" Content="GIOCA"
                             Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).PlayCommand}"
                             CommandParameter="{Binding}"/>
                 </Grid>
@@ -30,19 +29,18 @@
         </DataTemplate>
 
         <DataTemplate x:Key="LanServerRowTemplate" x:DataType="models:ServerInfo">
-            <Border Background="#1D2128" BorderBrush="#2A2F38" BorderThickness="1" CornerRadius="8" Margin="6" Padding="16">
+            <Border Background="{StaticResource CardBrush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" CornerRadius="8" Margin="6" Padding="16">
                 <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding HostName}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="{Binding MapName}" FontSize="13" Foreground="#8A8F98"/>
+                        <TextBlock Text="{Binding HostName}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding MapName}" FontSize="13" Foreground="{StaticResource TextMutedBrush}"/>
                     </StackPanel>
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="12,0" FontSize="16" Foreground="#8FD19E">
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="12,0" FontSize="16" Foreground="{StaticResource PositiveBrush}">
                         <Run Text="{Binding Players}"/><Run Text="/"/><Run Text="{Binding MaxPlayers}"/>
                     </TextBlock>
-                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="13" Foreground="#8A8F98"
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="13" Foreground="{StaticResource TextMutedBrush}"
                                Text="{Binding EndPointText}"/>
-                    <Button Grid.Column="3" Content="GIOCA" Padding="20,12" FontWeight="Bold"
-                            Background="#E8B923" Foreground="#1A1400"
+                    <Button Grid.Column="3" Classes="accent-action" Content="GIOCA"
                             Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).PlayLanCommand}"
                             CommandParameter="{Binding}"/>
                 </Grid>
@@ -56,29 +54,67 @@
                         CommandParameter="{Binding}">
                     <Border CornerRadius="8" ClipToBounds="True"
                             BorderThickness="{Binding IsSelected, Converter={x:Static conv:BoolToBorderThicknessConverter.Instance}}"
-                            BorderBrush="#E8B923">
+                            BorderBrush="{StaticResource AccentBrush}">
                         <StackPanel>
-                            <Panel Height="90" Background="#101318">
+                            <Panel Height="90" Background="{StaticResource DeepBrush}">
                                 <Image Source="{Binding Preview}" Stretch="UniformToFill" IsVisible="{Binding HasPreview}"/>
                                 <TextBlock Text="?" IsVisible="{Binding !HasPreview}" FontSize="28" Foreground="#3A3F48"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Panel>
-                            <Border Background="#1D2128" Padding="8,6">
+                            <Border Background="{StaticResource CardBrush}" Padding="8,6">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Map.LongName}" Foreground="White" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding Map.SourceLabel}" Foreground="#8A8F98" FontSize="11"/>
+                                    <TextBlock Text="{Binding Map.LongName}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Map.SourceLabel}" Foreground="{StaticResource TextMutedBrush}" FontSize="11"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                     </Border>
                 </Button>
                 <Button Content="{Binding IsFavorite, Converter={x:Static conv:FavoriteStarConverter.Instance}}"
-                        Width="30" Height="30" Padding="0" CornerRadius="15"
+                        Width="34" Height="34" Padding="0" CornerRadius="17"
                         HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0"
-                        Background="#B3000000" Foreground="#E8B923" FontSize="16"
+                        Background="#B3000000" Foreground="{StaticResource AccentBrush}" FontSize="16"
                         Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).ToggleFavoriteMapCommand}"
                         CommandParameter="{Binding}"/>
             </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="KnownPlayerRowTemplate" x:DataType="vm:QuestKnownPlayerItem">
+            <Border Background="{StaticResource CardBrush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" CornerRadius="8" Margin="6" Padding="16">
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding SightingSummary}" FontSize="13" Foreground="{StaticResource TextMutedBrush}"/>
+                    </StackPanel>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).AvailablePlayerRatings}"
+                              SelectedItem="{Binding Rating}" MinWidth="150" Margin="12,0" VerticalAlignment="Center"/>
+                    <Button Grid.Column="2" Classes="minor-action" Content="Rimuovi"
+                            Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).RemovePlayerCommand}"
+                            CommandParameter="{Binding}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="KeyBindingRowTemplate" x:DataType="vm:QuestKeyBindingItem">
+            <Border Background="{StaticResource CardBrush}" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,10" Padding="12">
+                <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                        <CheckBox Grid.Column="0" IsChecked="{Binding Enabled}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Description}" Foreground="{StaticResource TextPrimaryBrush}" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="8,0" TextWrapping="Wrap"/>
+                        <Button Grid.Column="2" Classes="minor-action" Content="Predefinito" IsVisible="{Binding IsBuiltIn}" Margin="0,0,8,0"
+                                Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).ResetSingleBindingCommand}"
+                                CommandParameter="{Binding}"/>
+                        <Button Grid.Column="3" Classes="minor-action" Content="Rimuovi" IsVisible="{Binding !IsBuiltIn}"
+                                Command="{Binding $parent[UserControl].((vm:QuestMainViewModel)DataContext).RemoveBindingCommand}"
+                                CommandParameter="{Binding}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,110">
+                        <TextBox Grid.Column="0" Text="{Binding Command}" Margin="0,0,8,0"/>
+                        <TextBox Grid.Column="1" Text="{Binding Key}" MaxLength="12"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
         </DataTemplate>
     </UserControl.Resources>
 
@@ -91,25 +127,35 @@
         <Grid Margin="32" RowDefinitions="Auto,Auto,*">
 
             <!-- ===================== Intestazione ===================== -->
+            <!-- L'interruttore "Motore: InstaGib (nostro fork) / Originale" e' stato rimosso il 19
+                 agosto 2026: il fork ha un bug di avvio nativo (crash SIGSEGV nel thread di
+                 rendering SDL2, vedi CLAUDE.md di D:\Dev\ioq3quest-instagib) non risolvibile in
+                 breve tempo. Si torna a lanciare sempre e solo Quake3Quest originale (vedi
+                 QuestLaunchService.PrepareAndLaunchBotMatch/PrepareAndHost/PrepareAndJoin, ora senza
+                 il parametro useInstaGibFork): le partite InstaGib online si trovano con il filtro
+                 "Solo InstaGib" gia' presente nella scheda Internet (FilterOnlyInstaGib), stesso
+                 flusso usato prima che esistesse il fork. -->
             <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,16">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                    <TextBlock Text="QUAKE III INSTAGIB" FontSize="28" FontWeight="Bold" Foreground="#E8B923" VerticalAlignment="Center"/>
-                    <TextBlock Text="per Quest" FontSize="18" Foreground="#B8BDC6" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16" VerticalAlignment="Bottom">
+                    <TextBlock Text="QUAKE III INSTAGIB" FontSize="28" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="per Quest" FontSize="18" Foreground="{StaticResource TextSubtitleBrush}" VerticalAlignment="Center"/>
+                    <!-- Versione dell'APK installato (letta dal PackageManager, vedi AppVersionLabel):
+                         permette di capire a colpo d'occhio quale build stai usando sul visore. -->
+                    <TextBlock Text="{Binding AppVersionLabel}" FontSize="12" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Bottom" Margin="0,0,0,4"/>
                 </StackPanel>
+
                 <Image Grid.Column="2" Source="avares://Quake3InstaGibLauncher.Quest/Assets/logo.png"
                        Width="30" Height="30" Stretch="Uniform" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- ===================== Barra schede ===================== -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                <StackPanel.Styles>
-                    <Style Selector="Button"><Setter Property="Background" Value="#2A2F38"/><Setter Property="Foreground" Value="#C7CCD4"/></Style>
-                </StackPanel.Styles>
-                <Button Content="INTERNET" Padding="16,12" FontWeight="Bold" Command="{Binding ShowMultiplayerTabCommand}"/>
-                <Button Content="LAN" Padding="16,12" FontWeight="Bold" Command="{Binding ShowLanTabCommand}"/>
-                <Button Content="BOT" Padding="16,12" FontWeight="Bold" Command="{Binding ShowBotTabCommand}"/>
-                <Button Content="OSPITA" Padding="16,12" FontWeight="Bold" Command="{Binding ShowHostTabCommand}"/>
-                <Button Content="PERSONAGGIO" Padding="16,12" FontWeight="Bold" Command="{Binding ShowProfileTabCommand}"/>
+                <Button Classes="tab-button" Content="INTERNET" Command="{Binding ShowMultiplayerTabCommand}"/>
+                <Button Classes="tab-button" Content="LAN" Command="{Binding ShowLanTabCommand}"/>
+                <Button Classes="tab-button" Content="BOT" Command="{Binding ShowBotTabCommand}"/>
+                <Button Classes="tab-button" Content="OSPITA" Command="{Binding ShowHostTabCommand}"/>
+                <Button Classes="tab-button" Content="PERSONAGGIO" Command="{Binding ShowProfileTabCommand}"/>
+                <Button Classes="tab-button" Content="GIOCATORI" Command="{Binding ShowPlayersTabCommand}"/>
             </StackPanel>
 
             <!-- ===================== Avviso permesso file (comune a tutte le schede che lanciano il gioco) ===================== -->
@@ -126,7 +172,7 @@
                 </Border>
 
                 <!-- ===================== SCHEDA INTERNET ===================== -->
-                <Grid Grid.Row="1" IsVisible="{Binding IsMultiplayerTab}" RowDefinitions="Auto,*,Auto">
+                <Grid Grid.Row="1" IsVisible="{Binding IsMultiplayerTab}" RowDefinitions="Auto,Auto,*,Auto">
                     <WrapPanel Grid.Row="0" Margin="0,0,0,10">
                         <CheckBox Content="Solo InstaGib" IsChecked="{Binding FilterOnlyInstaGib}" Foreground="#DDE1E8" Margin="0,0,16,6"/>
                         <CheckBox Content="Nascondi pieni" IsChecked="{Binding FilterHideFull}" Foreground="#DDE1E8" Margin="0,0,16,6"/>
@@ -143,35 +189,46 @@
                         </StackPanel>
                     </WrapPanel>
 
-                    <Border Grid.Row="1" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="4">
+                    <!-- Connessione diretta per indirizzo: il browser Internet e' best-effort (dipende
+                         da un master server esterno) e puo' non elencare tutti i server, incluso
+                         magari uno appena avviato dal PC - qui ci si unisce comunque conoscendo l'IP. -->
+                    <Border Grid.Row="1" Classes="section-panel" Padding="14" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Grid.Column="0" Text="Connetti a indirizzo:" Foreground="#DDE1E8"
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding ManualAddress}" Watermark="ip oppure ip:porta (es. 93.184.216.34:27960)"/>
+                            <Button Grid.Column="2" Classes="primary-action" Content="CONNETTI" Margin="10,0,0,0"
+                                    Command="{Binding ConnectManualCommand}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2" Classes="section-panel" Padding="4">
                         <ScrollViewer x:Name="InternetScrollViewer">
                             <ItemsControl ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource ServerRowTemplate}"/>
                         </ScrollViewer>
                     </Border>
 
-                    <Grid Grid.Row="2" ColumnDefinitions="Auto,*" Margin="0,16,0,0">
-                        <Button Grid.Column="0" Content="CERCA PARTITE" FontWeight="Bold" Padding="24,14" FontSize="16"
-                                Background="#C7361F" Foreground="White"
+                    <Grid Grid.Row="3" ColumnDefinitions="Auto,*" Margin="0,16,0,0">
+                        <Button Grid.Column="0" Classes="primary-action" Content="CERCA PARTITE"
                                 Command="{Binding SearchCommand}" IsEnabled="{Binding !IsSearching}"/>
                         <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" VerticalAlignment="Center" Margin="20,0,0,0"
-                                   Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="15"/>
+                                   Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                     </Grid>
                 </Grid>
 
                 <!-- ===================== SCHEDA LAN ===================== -->
                 <Grid Grid.Row="1" IsVisible="{Binding IsLanTab}" RowDefinitions="*,Auto">
-                    <Border Grid.Row="0" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="4">
+                    <Border Grid.Row="0" Classes="section-panel" Padding="4">
                         <ScrollViewer x:Name="LanScrollViewer">
                             <ItemsControl ItemsSource="{Binding LanServers}" ItemTemplate="{StaticResource LanServerRowTemplate}"/>
                         </ScrollViewer>
                     </Border>
 
                     <Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="0,16,0,0">
-                        <Button Grid.Column="0" Content="CERCA IN LAN" FontWeight="Bold" Padding="24,14" FontSize="16"
-                                Background="#C7361F" Foreground="White"
+                        <Button Grid.Column="0" Classes="primary-action" Content="CERCA IN LAN"
                                 Command="{Binding SearchLanCommand}" IsEnabled="{Binding !IsSearchingLan}"/>
                         <TextBlock Grid.Column="1" Text="{Binding LanStatusMessage}" VerticalAlignment="Center" Margin="20,0,0,0"
-                                   Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="15"/>
+                                   Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                     </Grid>
                 </Grid>
 
@@ -193,21 +250,21 @@
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <TextBlock Grid.Row="2" Text="{Binding SelectedMap.LongName, StringFormat='Mappa scelta: {0}'}" Foreground="#8FD19E" FontSize="14" Margin="0,8,0,0"/>
+                    <TextBlock Grid.Row="2" Text="{Binding SelectedMap.LongName, StringFormat='Mappa scelta: {0}'}" Foreground="{StaticResource PositiveBrush}" Margin="0,8,0,0"/>
 
-                    <Border Grid.Row="3" Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,10,0,0">
+                    <Border Grid.Row="3" Classes="section-panel" Padding="16" Margin="0,10,0,0">
                         <StackPanel Spacing="10">
                             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
                                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
-                                    <TextBlock Text="Numero di bot" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Numero di bot" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableBotCounts}" SelectedItem="{Binding BotCount}" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
-                                    <TextBlock Text="Difficolta' bot (1-5)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Difficolta' bot (1-5)" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableBotSkills}" SelectedItem="{Binding BotSkill}" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
-                                    <TextBlock Text="Modalita'" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Modalita'" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableGameTypes}" SelectedItem="{Binding BotGameType}" HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate><TextBlock Text="{Binding Converter={StaticResource GameTypeDisplay}}"/></DataTemplate>
@@ -215,32 +272,31 @@
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom">
-                                    <CheckBox Content="Usa mod InstaGib129" IsChecked="{Binding BotUseInstaGibMod}" Foreground="#DDE1E8"/>
+                                    <CheckBox Content="Usa mod InstaGib129" IsChecked="{Binding BotUseInstaGibMod}" Foreground="{StaticResource TextSecondaryBrush}"/>
                                 </StackPanel>
                             </Grid>
 
                             <Grid ColumnDefinitions="*,*,Auto">
                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                    <TextBlock Text="Frag limit" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Frag limit" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                                     <TextBox Text="{Binding BotFragLimit}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="0,0,10,0">
-                                    <TextBlock Text="Time limit (minuti)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Time limit (minuti)" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                                     <TextBox Text="{Binding BotTimeLimit}"/>
                                 </StackPanel>
-                                <Button Grid.Column="2" Content="AVVIA PARTITA CONTRO BOT" FontWeight="Bold" Padding="20,14" FontSize="15"
-                                        Background="#C7361F" Foreground="White" VerticalAlignment="Bottom"
+                                <Button Grid.Column="2" Classes="primary-action" Content="AVVIA PARTITA CONTRO BOT" VerticalAlignment="Bottom"
                                         Command="{Binding StartBotMatchCommand}"/>
                             </Grid>
 
-                            <TextBlock Text="{Binding BotStatusMessage}" Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="14"/>
+                            <TextBlock Text="{Binding BotStatusMessage}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
                 </Grid>
 
                 <!-- ===================== SCHEDA OSPITA ===================== -->
                 <ScrollViewer Grid.Row="1" IsVisible="{Binding IsHostTab}" x:Name="HostScrollViewer">
-                    <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
+                    <Border Classes="section-panel" Padding="24">
                         <StackPanel Spacing="14" MaxWidth="700">
                             <TextBlock Text="{Binding SelectedMap.LongName, StringFormat='Mappa: {0} (scelta nella scheda BOT)'}"
                                        Foreground="#8FD19E" FontSize="15"/>
@@ -298,8 +354,7 @@
                                 </StackPanel>
                             </Grid>
 
-                            <Button Content="OSPITA PARTITA" FontWeight="Bold" Padding="24,14" FontSize="16"
-                                    Background="#C7361F" Foreground="White" HorizontalAlignment="Left"
+                            <Button Classes="primary-action" Content="OSPITA PARTITA" HorizontalAlignment="Left"
                                     Command="{Binding StartHostCommand}"/>
 
                             <TextBlock Text="{Binding HostStatusMessage}" Foreground="#DDE1E8" TextWrapping="Wrap" FontSize="15"/>
@@ -309,7 +364,7 @@
 
                 <!-- ===================== SCHEDA PERSONAGGIO ===================== -->
                 <ScrollViewer Grid.Row="1" IsVisible="{Binding IsProfileTab}" x:Name="ProfileScrollViewer">
-                    <Border Background="#DD15181D" BorderBrush="#332A2015" BorderThickness="1" CornerRadius="10" Padding="24">
+                    <Border Classes="section-panel" Padding="24">
                         <StackPanel Spacing="14" MaxWidth="700">
 
                             <TextBlock Text="Nome" Foreground="#DDE1E8" FontSize="16"/>
@@ -407,25 +462,63 @@
                             <Border Height="1" Background="#2A2F38" Margin="0,4"/>
 
                             <TextBlock Text="Impostazioni video" Foreground="#DDE1E8" FontSize="16" FontWeight="Bold"/>
-                            <Grid ColumnDefinitions="*,*,*">
+                            <Grid ColumnDefinitions="*,*,*,*">
                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="FOV (90-160)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <TextBox Text="{Binding VideoFov}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <TextBlock Text="Risoluzione VR (supersampling)" Foreground="#DDE1E8" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                    <ComboBox ItemsSource="{Binding AvailableVrPixelDensityLevels}" SelectedItem="{Binding VideoVrPixelDensity}" HorizontalAlignment="Stretch">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate><TextBlock Text="{Binding StringFormat='{}{0:0.0}x'}"/></DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Margin="0,0,10,0">
                                     <TextBlock Text="Anti-aliasing" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding AvailableAntiAliasingLevels}" SelectedItem="{Binding VideoAntiAliasing}" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
-                                <StackPanel Grid.Column="2">
+                                <StackPanel Grid.Column="3">
                                     <TextBlock Text="Luminosita' (gamma)" Foreground="#DDE1E8" Margin="0,0,0,4"/>
                                     <TextBox Text="{Binding VideoGamma}"/>
                                 </StackPanel>
                             </Grid>
+                            <TextBlock Text="Risoluzione piu' alta = immagine piu' nitida ma piu' pesante per la GPU: 1.3x-1.5x e' di solito il punto giusto su Quest 3, oltre 1.8x rischia di calare il framerate nelle mappe piu' affollate."
+                                       Foreground="#8A8F98" FontSize="12" TextWrapping="Wrap"/>
+
+                            <Grid ColumnDefinitions="*,*" Margin="0,6,0,0">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Altezza personaggio (metri, +alza / -abbassa)" Foreground="#DDE1E8" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                    <TextBox Text="{Binding VideoHeightAdjust}"/>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="Se in gioco ti senti troppo basso, prova un valore positivo (es. 0.10-0.20) qui invece di rifare il setup Guardian del Quest."
+                                       Foreground="#8A8F98" FontSize="12" TextWrapping="Wrap"/>
 
                             <TextBlock Text="Le modifiche si salvano da sole e vengono applicate al prossimo avvio partita." Foreground="#8A8F98" FontSize="13" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
                 </ScrollViewer>
+
+                <!-- ===================== SCHEDA GIOCATORI CONOSCIUTI ===================== -->
+                <Grid Grid.Row="1" IsVisible="{Binding IsPlayersTab}" RowDefinitions="Auto,*,Auto">
+                    <Border Grid.Row="0" Classes="section-panel" Padding="16" Margin="0,0,0,16">
+                        <Grid ColumnDefinitions="*,180,Auto">
+                            <TextBox Grid.Column="0" Watermark="Nome giocatore" Text="{Binding NewPlayerName}" Margin="0,0,10,0"/>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding AvailablePlayerRatings}" SelectedItem="{Binding NewPlayerRating}" Margin="0,0,10,0"/>
+                            <Button Grid.Column="2" Classes="accent-action" Content="AGGIUNGI" Command="{Binding AddPlayerCommand}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Classes="section-panel" Padding="4">
+                        <ScrollViewer x:Name="PlayersScrollViewer">
+                            <ItemsControl ItemsSource="{Binding Players}" ItemTemplate="{StaticResource KnownPlayerRowTemplate}"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <TextBlock Grid.Row="2" Text="{Binding PlayersStatusMessage}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                </Grid>
             </Grid>
         </Grid>
     </Panel>

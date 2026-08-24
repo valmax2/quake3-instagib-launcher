@@ -1,0 +1,100 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===================================================================================
+         Tema condiviso dell'app Quest: prima di questo file la palette (colori pannelli/card/
+         testo/accenti) era ripetuta identica come valori esadecimali sparsi in tutto MainView.axaml
+         - stesso aspetto "InstaGib Reactor" gia' scelto, solo centralizzato in un unico posto invece
+         che copia-incollato, cosi' resta coerente anche aggiungendo nuove schede.
+
+         Include anche un rialzo delle metriche per l'uso in VR col puntatore laser del controller
+         Quest (meno preciso di un mouse): altezza minima pulsanti ~56px, testo di corpo >=15px,
+         scala di spaziatura 8/16/24 gia' in uso nel resto del file.
+         =================================================================================== -->
+
+    <Styles.Resources>
+        <ResourceDictionary>
+            <!-- ===== Pannelli/card (tre toni scuri gia' in uso, prima leggermente incoerenti tra
+                 loro - es. i bordi dei pannelli sezione usavano #332A2015 invece di #2A2F38 come le
+                 card, senza un motivo apparente) ===== -->
+            <SolidColorBrush x:Key="PanelBrush" Color="#DD15181D"/>
+            <SolidColorBrush x:Key="CardBrush" Color="#1D2128"/>
+            <SolidColorBrush x:Key="DeepBrush" Color="#101318"/>
+            <SolidColorBrush x:Key="PanelBorderBrush" Color="#2A2F38"/>
+
+            <!-- ===== Testo ===== -->
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#DDE1E8"/>
+            <SolidColorBrush x:Key="TextMutedBrush" Color="#8A8F98"/>
+            <SolidColorBrush x:Key="TextSubtitleBrush" Color="#B8BDC6"/>
+
+            <!-- ===== Accenti ===== -->
+            <SolidColorBrush x:Key="AccentBrush" Color="#E8B923"/>
+            <SolidColorBrush x:Key="AccentTextBrush" Color="#1A1400"/>
+            <SolidColorBrush x:Key="ActionBrush" Color="#C7361F"/>
+            <SolidColorBrush x:Key="PositiveBrush" Color="#8FD19E"/>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <!-- Base leggibilita': non tocca gli elementi che gia' impostano FontSize esplicitamente
+         (un Setter sull'elemento vince sempre su questo default di stile), alza solo il
+         "pavimento" per tutto cio' che non lo specifica. -->
+    <Style Selector="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <!-- Pulsante barra schede (INTERNET/LAN/BOT/OSPITA/PERSONAGGIO/GIOCATORI/TASTI): stesso
+         aspetto di prima, solo piu' comodo da centrare col puntatore laser. -->
+    <Style Selector="Button.tab-button">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="Padding" Value="20,16"/>
+        <Setter Property="MinHeight" Value="56"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <!-- Pulsante d'azione primario rosso (CERCA PARTITE / AVVIA PARTITA / OSPITA PARTITA / ecc). -->
+    <Style Selector="Button.primary-action">
+        <Setter Property="Background" Value="{StaticResource ActionBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Padding" Value="28,16"/>
+        <Setter Property="MinHeight" Value="56"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <!-- Pulsante d'azione dorato (GIOCA nelle card server, AGGIUNGI in Giocatori/Tasti): stesso
+         accento oro gia' usato per titoli/selezioni, con testo scuro per contrasto. -->
+    <Style Selector="Button.accent-action">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentTextBrush}"/>
+        <Setter Property="Padding" Value="22,14"/>
+        <Setter Property="MinHeight" Value="52"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <!-- Pulsante secondario piccolo (rimuovi/reset): meno invadente delle azioni primarie ma
+         comunque comodo da centrare col laser. -->
+    <Style Selector="Button.minor-action">
+        <Setter Property="Background" Value="{StaticResource PanelBorderBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="MinHeight" Value="44"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+
+    <!-- Pannello sezione (bordo contenitore di liste/form): sostituisce i bordi #332A2015 usati
+         prima solo in alcuni punti, ora coerente con PanelBorderBrush ovunque. -->
+    <Style Selector="Border.section-panel">
+        <Setter Property="Background" Value="{StaticResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+</Styles>

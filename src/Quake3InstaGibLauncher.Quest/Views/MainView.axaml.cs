@@ -34,6 +34,7 @@ public partial class MainView : UserControl
             QuestTab.Bot => BotMapsScrollViewer,
             QuestTab.Host => HostScrollViewer,
             QuestTab.Profile => ProfileScrollViewer,
+            QuestTab.Players => PlayersScrollViewer,
             _ => null,
         };
 

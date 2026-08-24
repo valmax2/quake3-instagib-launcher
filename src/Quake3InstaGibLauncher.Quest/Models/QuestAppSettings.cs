@@ -1,4 +1,5 @@
 using Quake3InstaGibLauncher.Core.Models;
+using Quake3InstaGibLauncher.Core.Services;
 
 namespace Quake3InstaGibLauncher.Quest.Models;
 
@@ -32,6 +33,13 @@ public sealed class VideoSettings
     /// non verificato su hardware reale quale sia il cvar esatto usato da questo fork; se il
     /// motore lo ignora non succede nulla di male. Null = non forzato.</summary>
     public double? VrPixelDensity { get; set; }
+
+    /// <summary>Offset verticale applicato a visore/mani/arma (cvar vr_heightAdjust nel motore,
+    /// vedi vr_input.c/vr_renderer.c) - corregge la sensazione di "personaggio troppo basso/alto"
+    /// senza dover ricalibrare il Guardian. Unita' di misura: metri (stessa del motore VR). Valori
+    /// positivi alzano il punto di vista, negativi lo abbassano. Null = non forzato (0.0 di
+    /// fabbrica, il motore lo salva comunque da solo una volta cambiato in-game).</summary>
+    public double? HeightAdjust { get; set; }
 }
 
 /// <summary>Impostazioni persistite dell'app Quest.</summary>
@@ -43,4 +51,14 @@ public sealed class QuestAppSettings
 
     /// <summary>Nomi tecnici (es. "q3dm17") delle mappe segnate come preferite.</summary>
     public List<string> FavoriteMapTechnicalNames { get; set; } = new();
+
+    /// <summary>Giocatori incontrati in partita, salvati manualmente per riconoscerli in futuro
+    /// (nome pulito + valutazione) - stesso modello Core gia' usato dal launcher Windows/Mac.</summary>
+    public List<KnownPlayer> KnownPlayers { get; set; } = new();
+
+    /// <summary>Bind tasti/comandi console e messaggi chat rapidi, applicati al lancio del gioco
+    /// (vedi QuestLaunchService). Popolato con i preset di default al primo avvio: stesso elenco
+    /// gia' usato dal launcher Windows/Mac (Core.Services.KeyBindingDefaults), cosi' i comandi
+    /// preimpostati restano identici su tutte le piattaforme.</summary>
+    public List<KeyBindingEntry> KeyBindings { get; set; } = KeyBindingDefaults.BuildDefaultPresets();
 }

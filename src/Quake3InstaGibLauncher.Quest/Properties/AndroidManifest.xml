@@ -22,7 +22,13 @@
 	     visibility): senza questa dichiarazione esplicita, PackageManager.GetLaunchIntentForPackage
 	     per Quake3Quest torna null anche se l'app e' installata, dando un falso "non installato".
 	     Bug reale trovato dal vivo sul Quest 3 dell'utente durante il primo test. -->
+	<!-- Due motori selezionabili dall'interruttore InstaGib/Originale (17 agosto 2026, vedi
+	     QuestLaunchService): com.vstudioapps.ioq3quest.instagib e' il nostro fork (applicationId
+	     proprio da quando non sostituisce piu' l'originale ad ogni build), com.drbeef.ioq3quest e'
+	     Quake3Quest originale installato dall'utente via SideQuest. Entrambi vanno dichiarati qui
+	     o PackageManager.GetLaunchIntentForPackage torna null anche se installati. -->
 	<queries>
+		<package android:name="com.vstudioapps.ioq3quest.instagib" />
 		<package android:name="com.drbeef.ioq3quest" />
 	</queries>
 

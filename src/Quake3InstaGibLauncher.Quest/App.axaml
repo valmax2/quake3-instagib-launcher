@@ -4,5 +4,6 @@
              RequestedThemeVariant="Dark">
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://Quake3InstaGibLauncher.Quest/Themes/QuestTheme.axaml"/>
     </Application.Styles>
 </Application>
