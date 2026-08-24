@@ -131,7 +131,17 @@ public sealed class Quake3ServerBrowser
             catch (SocketException) { /* singolo server irraggiungibile: si prosegue con gli altri */ }
         }
 
-        var deadline = DateTime.UtcNow + detailsTimeout.Value;
+        // Il master server pubblico puo' restituire facilmente qualche centinaio di indirizzi: con
+        // una finestra di ascolto fissa (es. 3-6 secondi) indipendente dal numero di server
+        // interrogati, su reti piu' lente (es. Wi-Fi di un visore VR rispetto al cavo di un PC) le
+        // risposte "getinfo" arrivate per ultime rischiano di non fare in tempo, facendo sembrare
+        // la ricerca "filtrata" quando in realta' e' solo scaduta troppo presto. Allunghiamo quindi
+        // la finestra in proporzione al numero di server trovati (limite di sicurezza a 12s per non
+        // far restare l'utente in attesa all'infinito con un master particolarmente affollato).
+        var scaledDetailsTimeout = TimeSpan.FromMilliseconds(
+            Math.Min(12_000, Math.Max(detailsTimeout.Value.TotalMilliseconds, serverEndPoints.Count * 15)));
+
+        var deadline = DateTime.UtcNow + scaledDetailsTimeout;
         var buffer = new byte[4096];
 
         while (DateTime.UtcNow < deadline)
